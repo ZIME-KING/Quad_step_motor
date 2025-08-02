@@ -1,0 +1,3 @@
+../User/software_Time.c:23:6:SetTime	4	static
+../User/software_Time.c:33:6:GetTime	16	static
+../User/software_Time.c:38:9:CompareTime	16	static

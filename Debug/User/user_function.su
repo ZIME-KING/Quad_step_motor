@@ -1,0 +1,3 @@
+../User/user_function.c:7:6:Uart_1_Data_Processing	32	static
+../User/user_function.c:18:6:Uart_3_Data_Processing	8	static
+../User/user_function.c:26:6:User_main	8	static

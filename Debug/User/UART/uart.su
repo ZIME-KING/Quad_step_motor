@@ -1,0 +1,8 @@
+../User/UART/uart.c:21:6:Uart_1_Time_Even	4	static
+../User/UART/uart.c:45:6:Uart_1_Receive_Interrupt	8	static
+../User/UART/uart.c:60:6:Uart_2_Time_Even	4	static
+../User/UART/uart.c:84:6:Uart_2_Receive_Interrupt	8	static
+../User/UART/uart.c:99:6:Uart_3_Time_Even	4	static
+../User/UART/uart.c:123:6:Uart_3_Receive_Interrupt	8	static
+../User/UART/uart.c:152:6:HAL_UART_RxCpltCallback	16	static
+../User/UART/uart.c:203:6:UART_Transmit_Str	24	static
