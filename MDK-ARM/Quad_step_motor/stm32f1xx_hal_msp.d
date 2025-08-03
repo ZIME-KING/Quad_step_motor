@@ -40,3 +40,4 @@ quad_step_motor\stm32f1xx_hal_msp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.
 quad_step_motor\stm32f1xx_hal_msp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\stm32f1xx_hal_msp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 quad_step_motor\stm32f1xx_hal_msp.o: ..\User\control.h
+quad_step_motor\stm32f1xx_hal_msp.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

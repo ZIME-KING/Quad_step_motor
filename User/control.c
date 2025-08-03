@@ -18,8 +18,7 @@ uint16_t PPWCD = 0X80;	   // 峰值宽度(电流)CD
 uint16_t PPWEF = 0X80;	   // 峰值宽度(电流)EF
 uint16_t PPWGH = 0X80;	   // 峰值宽度(电流)GH
 uint16_t PPWIJ = 0X80;	   // 峰值宽度(电流)IJ
-uint16_t PSUMA = 0XFF;	   // 步进数A
-uint16_t PSUMB = 0XFF;	   // 步进数B
+
 uint16_t CCWCWA = 0X1000;  // 方向A
 uint16_t CCWCWB = 0X1000;  // 方向B
 uint16_t BRAKEA = 0x2000;  // 刹车A
@@ -28,17 +27,70 @@ uint16_t ENDISA = 0X4000;  // 使能A
 uint16_t ENDISB = 0X4000;  // 使能B
 uint16_t MICROA = 0X0000;  // 细分数
 uint16_t MICROB = 0X0000;  // 细分数
-uint16_t INTCTAB = 0x0000; // 每步周期AB
-uint16_t INTCTCD = 0x0000; // 每步周期CD
-uint16_t INTCTEF = 0x0000; // 每步周期EF
-uint16_t INTCTGH = 0x0000; // 每步周期GH
-uint16_t INTCTIJ = 0x0000; // 每步周期IJ
+
+
+
+
+uint16_t PSUMA = 0;	   // 步进数A
+uint16_t PSUMB = 0;	   // 步进数B
+uint16_t PSUMC = 0;	   // 步进数C
+uint16_t PSUMD = 0;	   // 步进数D
+
+//当 INTCTAB[15:0]=1024 时，64 细分下每步周期 12×900/27MHz=0.4ms
+
+//当 INTCTAB[15:0]=1024 时，256 细分下每步周期 3×900/27MHz=0.1ms
+
+
+//设置为900，0.1ms一步 一个VD周期按20ms->50hz,最大设置为200步
+uint16_t INTCTAB = 900; // 每步周期AB
+uint16_t INTCTCD = 900; // 每步周期CD
+uint16_t INTCTEF = 900; // 每步周期EF
+uint16_t INTCTGH = 900; // 每步周期GH
+uint16_t INTCTIJ = 900; // 每步周期GH
+
+
 
 uint16_t LED1 = 0x0000;
 uint16_t LED2 = 0x0000;
 uint16_t LED3 = 0x0000;
 uint16_t LED4 = 0x0000;
 
+
+// 步进电机控制相关变量
+static bool stepper_running = false;
+static uint16_t target_steps_A = 0;
+static uint16_t target_steps_B = 0;
+static uint16_t current_steps_A = 0;
+static uint16_t current_steps_B = 0;
+
+// VD_FZ次数控制相关变量
+static uint16_t vd_fz_count = 0;        // 当前执行次数
+static uint16_t vd_fz_target_count = 0; // 目标执行次数
+static bool vd_fz_enabled = false;      // VD_FZ使能标志
+
+// 步进电机12位置控制相关变量
+static int32_t motor12_current_position = 0;  // 当前位置
+static int32_t motor12_target_position = 0;   // 目标位置
+static bool motor12_position_control_enabled = true; // 位置控制使能标志
+static uint16_t motor12_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+
+// 步进电机34位置控制相关变量
+static int32_t motor34_current_position = 0;  // 当前位置
+static int32_t motor34_target_position = 0;   // 目标位置
+static bool motor34_position_control_enabled = true; // 位置控制使能标志
+static uint16_t motor34_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+
+// 步进电机56位置控制相关变量
+static int32_t motor56_current_position = 0;  // 当前位置
+static int32_t motor56_target_position = 0;   // 目标位置
+static bool motor56_position_control_enabled = true; // 位置控制使能标志
+static uint16_t motor56_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+
+// 步进电机78位置控制相关变量
+static int32_t motor78_current_position = 0;  // 当前位置
+static int32_t motor78_target_position = 0;   // 目标位置
+static bool motor78_position_control_enabled = true; // 位置控制使能标志
+static uint16_t motor78_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
 //timer_oc_parameter_struct timer0_ocintpara;
 //timer_parameter_struct timer0_initpara;
 
@@ -104,36 +156,36 @@ void Reset_MS41968(void)
 void Init_MS41968(void)
 {
     Spi_Write(0x20, 0x0001); // 不使能复用直流通道 不使能直流驱动外部管脚控制 设置DT1延时
+   
     Spi_Write(0x22, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
     Spi_Write(0x23, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x24, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-    Spi_Write(0x25, 0x0800); // 设置步进周期
+    Spi_Write(0x24, (0xcfff&0xF000)|PSUMA); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+    Spi_Write(0x25, INTCTAB); // 设置步进周期
     Spi_Write(0x26, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
 
     Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
     Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x29, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-    Spi_Write(0x2a, 0x0800); // 设置步进周期
+    Spi_Write(0x29, (0xcfff&0xF000)|PSUMB); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+    Spi_Write(0x2a, INTCTCD); // 设置步进周期
     Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
 
     Spi_Write(0x2c, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
     Spi_Write(0x2d, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x2e, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-    Spi_Write(0x2f, 0x0800); // 设置步进周期
+    Spi_Write(0x2e, (0xcfff&0xF000)|PSUMC); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+    Spi_Write(0x2f, INTCTEF); // 设置步进周期
     Spi_Write(0x30, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
 
     Spi_Write(0x31, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
     Spi_Write(0x32, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x33, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-    Spi_Write(0x34, 0x0800); // 设置步进周期
+    Spi_Write(0x33, (0xcfff&0xF000)|PSUMD); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+    Spi_Write(0x34, INTCTGH); // 设置步进周期
     Spi_Write(0x35, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
 
-    Spi_Write(0x36, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-    Spi_Write(0x37, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x38, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-    Spi_Write(0x39, 0x0800); // 设置步进周期
-    Spi_Write(0x3a, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-
+//    Spi_Write(0x36, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+//    Spi_Write(0x37, 0xd8d8); // 设置最大占空比为 90%
+//    Spi_Write(0x38, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+//    Spi_Write(0x39, INTCTAB); // 设置步进周期
+//    Spi_Write(0x3a, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
     Spi_Write(0x3b, 0x0000); // 设置直流电机通道A驱动状态  PWM频率 PWM占空比
     Spi_Write(0x3c, 0x0000); // 设置直流电机通道B驱动状态  PWM频率 PWM占空比
     Spi_Write(0x3e, 0x0000); // 错误指示寄存器
@@ -148,19 +200,347 @@ void Init_MS41968(void)
     Spi_Write(0x0b, 0x0480); // 设置光圈模块使能 TESTEN1使能       0x0480
 }
 
+void set_34(uint16_t pos){
+    Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+    Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
+    // 保持0xcfff的高4位，D12位=0（正方向），设置步数（低12位）
+    Spi_Write(0x29, (0xcfff&0xF000)|(pos&0x0FFF)); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12=0正方向) 步数(D11-D0)
+    Spi_Write(0x2a, INTCTCD); // 设置步进周期
+    Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+    VD_FZ();
+ }
+
+/**
+ * @brief 打印步进电机12的当前位置和目标位置
+ */
+void Motor12_PrintPositions(void)
+{
+    LOG_Print(LOG_LEVEL_INFO,"=== 步进电机12位置信息 ===\r\n");
+    LOG_Print(LOG_LEVEL_INFO,"当前位置: %d\r\n", motor12_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"目标位置: %d\r\n", motor12_target_position);
+    LOG_Print(LOG_LEVEL_INFO,"位置误差: %d\r\n", motor12_target_position - motor12_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"控制状态: %s\r\n", motor12_position_control_enabled ? "启用" : "禁用");
+    LOG_Print(LOG_LEVEL_INFO,"每周期最大步数: %d\r\n", motor12_max_steps_per_cycle);
+    LOG_Print(LOG_LEVEL_INFO,"是否到达目标: %s\r\n", (motor12_current_position == motor12_target_position) ? "是" : "否");
+    LOG_Print(LOG_LEVEL_INFO,"========================\r\n");
+}
+
+/**
+ * @brief 打印步进电机34的当前位置和目标位置
+ */
+void Motor34_PrintPositions(void)
+{
+    LOG_Print(LOG_LEVEL_INFO,"=== 步进电机34位置信息 ===\r\n");
+    LOG_Print(LOG_LEVEL_INFO,"当前位置: %d\r\n", motor34_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"目标位置: %d\r\n", motor34_target_position);
+    LOG_Print(LOG_LEVEL_INFO,"位置误差: %d\r\n", motor34_target_position - motor34_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"控制状态: %s\r\n", motor34_position_control_enabled ? "启用" : "禁用");
+    LOG_Print(LOG_LEVEL_INFO,"每周期最大步数: %d\r\n", motor34_max_steps_per_cycle);
+    LOG_Print(LOG_LEVEL_INFO,"是否到达目标: %s\r\n", (motor34_current_position == motor34_target_position) ? "是" : "否");
+    LOG_Print(LOG_LEVEL_INFO,"========================\r\n");
+}
+
+/**
+ * @brief 打印步进电机56的当前位置和目标位置
+ */
+void Motor56_PrintPositions(void)
+{
+    LOG_Print(LOG_LEVEL_INFO,"=== 步进电机56位置信息 ===\r\n");
+    LOG_Print(LOG_LEVEL_INFO,"当前位置: %d\r\n", motor56_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"目标位置: %d\r\n", motor56_target_position);
+    LOG_Print(LOG_LEVEL_INFO,"位置误差: %d\r\n", motor56_target_position - motor56_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"控制状态: %s\r\n", motor56_position_control_enabled ? "启用" : "禁用");
+    LOG_Print(LOG_LEVEL_INFO,"每周期最大步数: %d\r\n", motor56_max_steps_per_cycle);
+    LOG_Print(LOG_LEVEL_INFO,"是否到达目标: %s\r\n", (motor56_current_position == motor56_target_position) ? "是" : "否");
+    LOG_Print(LOG_LEVEL_INFO,"========================\r\n");
+}
+
+/**
+ * @brief 打印步进电机78的当前位置和目标位置
+ */
+void Motor78_PrintPositions(void)
+{
+    LOG_Print(LOG_LEVEL_INFO,"=== 步进电机78位置信息 ===\r\n");
+    LOG_Print(LOG_LEVEL_INFO,"当前位置: %d\r\n", motor78_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"目标位置: %d\r\n", motor78_target_position);
+    LOG_Print(LOG_LEVEL_INFO,"位置误差: %d\r\n", motor78_target_position - motor78_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"控制状态: %s\r\n", motor78_position_control_enabled ? "启用" : "禁用");
+    LOG_Print(LOG_LEVEL_INFO,"每周期最大步数: %d\r\n", motor78_max_steps_per_cycle);
+    LOG_Print(LOG_LEVEL_INFO,"是否到达目标: %s\r\n", (motor78_current_position == motor78_target_position) ? "是" : "否");
+    LOG_Print(LOG_LEVEL_INFO,"========================\r\n");
+}
+
+/**
+ * @brief 步进电机12位置控制函数 (每20ms调用一次)
+ * 根据目标位置自动计算并执行步进
+ */
+void Motor12_PositionControl(void)
+{
+    if (!motor12_position_control_enabled) {
+        return; // 位置控制未启用
+    }
+    // 计算位置差
+    int32_t position_error = motor12_target_position - motor12_current_position;
+    
+    if (position_error == 0) {
+        return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    uint16_t steps_to_move;
+    uint16_t register_value;
+    
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+        steps_to_move = (position_error > motor12_max_steps_per_cycle) ? 
+                       motor12_max_steps_per_cycle : (uint16_t)position_error;
+        // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+        int32_t abs_error = -position_error;
+        steps_to_move = (abs_error > motor12_max_steps_per_cycle) ? 
+                       motor12_max_steps_per_cycle : (uint16_t)abs_error;
+        // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
+    }
+    
+    // 限制步数在12位范围内
+    if (steps_to_move > 0x0FFF) {
+        steps_to_move = 0x0FFF;
+        // 重新计算寄存器值
+        if (position_error > 0) {
+            register_value = (0xcfff & 0xF000) | 0x0FFF;
+        } else {
+            register_value = (0xcfff & 0xF000) | 0x1000 | 0x0FFF;
+        }
+    }
+    if (steps_to_move > 0) {
+        // 执行步进 - Motor12使用寄存器0x21-0x25
+        Spi_Write(0x21, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x22, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x23, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x24, INTCTAB); // 设置步进周期
+        Spi_Write(0x25, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ();
+        
+        // 更新当前位置
+        if (position_error > 0) {
+            motor12_current_position += steps_to_move;
+        } else {
+            motor12_current_position -= steps_to_move;
+        }
+    }
+}
+
+/**
+ * @brief 步进电机34位置控制函数 (每20ms调用一次)
+ * 根据目标位置自动计算并执行步进
+ */
+void Motor34_PositionControl(void)
+{
+    if (!motor34_position_control_enabled) {
+        return; // 位置控制未启用
+    }
+    // 计算位置差
+    int32_t position_error = motor34_target_position - motor34_current_position;
+    
+    if (position_error == 0) {
+        return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    uint16_t steps_to_move;
+    uint16_t register_value;
+    
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+        steps_to_move = (position_error > motor34_max_steps_per_cycle) ? 
+                       motor34_max_steps_per_cycle : (uint16_t)position_error;
+        // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+        int32_t abs_error = -position_error;
+        steps_to_move = (abs_error > motor34_max_steps_per_cycle) ? 
+                       motor34_max_steps_per_cycle : (uint16_t)abs_error;
+        // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
+    }
+    
+    // 限制步数在12位范围内
+    if (steps_to_move > 0x0FFF) {
+        steps_to_move = 0x0FFF;
+        // 重新计算寄存器值
+        if (position_error > 0) {
+            register_value = (0xcfff & 0xF000) | 0x0FFF;
+        } else {
+            register_value = (0xcfff & 0xF000) | 0x1000 | 0x0FFF;
+        }
+    }
+    if (steps_to_move > 0) {
+        // 执行步进 - Motor34使用寄存器0x27-0x2b
+        Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x29, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x2a, INTCTCD); // 设置步进周期
+        Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ();
+        
+        // 更新当前位置
+        if (position_error > 0) {
+            motor34_current_position += steps_to_move;
+        } else {
+            motor34_current_position -= steps_to_move;
+        }
+				Motor34_PrintPositions();
+    }
+}
+
+/**
+ * @brief 步进电机56位置控制函数 (每20ms调用一次)
+ * 根据目标位置自动计算并执行步进
+ */
+void Motor56_PositionControl(void)
+{
+    if (!motor56_position_control_enabled) {
+        return; // 位置控制未启用
+    }
+    // 计算位置差
+    int32_t position_error = motor56_target_position - motor56_current_position;
+    
+    if (position_error == 0) {
+        return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    uint16_t steps_to_move;
+    uint16_t register_value;
+    
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+        steps_to_move = (position_error > motor56_max_steps_per_cycle) ? 
+                       motor56_max_steps_per_cycle : (uint16_t)position_error;
+        // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+        int32_t abs_error = -position_error;
+        steps_to_move = (abs_error > motor56_max_steps_per_cycle) ? 
+                       motor56_max_steps_per_cycle : (uint16_t)abs_error;
+        // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
+    }
+    
+    // 限制步数在12位范围内
+    if (steps_to_move > 0x0FFF) {
+        steps_to_move = 0x0FFF;
+        // 重新计算寄存器值
+        if (position_error > 0) {
+            register_value = (0xcfff & 0xF000) | 0x0FFF;
+        } else {
+            register_value = (0xcfff & 0xF000) | 0x1000 | 0x0FFF;
+        }
+    }
+    if (steps_to_move > 0) {
+        // 执行步进 - Motor56使用寄存器0x2d-0x31
+        Spi_Write(0x2d, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x2e, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x2f, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x30, INTCTEF); // 设置步进周期
+        Spi_Write(0x31, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ();
+        
+        // 更新当前位置
+        if (position_error > 0) {
+            motor56_current_position += steps_to_move;
+        } else {
+            motor56_current_position -= steps_to_move;
+        }
+    }
+}
+
+/**
+ * @brief 步进电机78位置控制函数 (每20ms调用一次)
+ * 根据目标位置自动计算并执行步进
+ */
+void Motor78_PositionControl(void)
+{
+    if (!motor78_position_control_enabled) {
+        return; // 位置控制未启用
+    }
+    // 计算位置差
+    int32_t position_error = motor78_target_position - motor78_current_position;
+    
+    if (position_error == 0) {
+        return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    uint16_t steps_to_move;
+    uint16_t register_value;
+    
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+        steps_to_move = (position_error > motor78_max_steps_per_cycle) ? 
+                       motor78_max_steps_per_cycle : (uint16_t)position_error;
+        // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+        int32_t abs_error = -position_error;
+        steps_to_move = (abs_error > motor78_max_steps_per_cycle) ? 
+                       motor78_max_steps_per_cycle : (uint16_t)abs_error;
+        // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
+    }
+    
+    // 限制步数在12位范围内
+    if (steps_to_move > 0x0FFF) {
+        steps_to_move = 0x0FFF;
+        // 重新计算寄存器值
+        if (position_error > 0) {
+            register_value = (0xcfff & 0xF000) | 0x0FFF;
+        } else {
+            register_value = (0xcfff & 0xF000) | 0x1000 | 0x0FFF;
+        }
+    }
+    if (steps_to_move > 0) {
+        // 执行步进 - Motor78使用寄存器0x33-0x37
+        Spi_Write(0x33, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x34, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x35, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x36, INTCTGH); // 设置步进周期
+        Spi_Write(0x37, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ();
+        
+        // 更新当前位置
+        if (position_error > 0) {
+            motor78_current_position += steps_to_move;
+        } else {
+            motor78_current_position -= steps_to_move;
+        }
+    }
+}
+
 void VD_FZ(void)
 {
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
     // 步进电机A的VD脉冲控制
     // 根据实际硬件连接，控制相应的GPIO引脚
     // 这里使用MS_PLS1和MS_PLS2引脚作为示例
-    HAL_GPIO_WritePin(GPIOB, MS_PLS1_Pin, GPIO_PIN_SET);   // VD脉冲高电平
-    HAL_GPIO_WritePin(GPIOB, MS_PLS2_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_SET);   // VD脉冲高电平
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_SET);   // VD脉冲高电平
     
     // 延时20微秒（在中断中使用简单的循环延时）
-    for(volatile int i = 0; i < 100; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
     
-    HAL_GPIO_WritePin(GPIOB, MS_PLS1_Pin, GPIO_PIN_RESET); // VD脉冲低电平
-    HAL_GPIO_WritePin(GPIOB, MS_PLS2_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+    HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET); // VD脉冲低电平
+    HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET); // VD脉冲低电平
 }
 
 void VD_IS(void)
@@ -185,7 +565,7 @@ void VD_IS(void)
 #define KEY_SW1_ENTER				0x00000010
 #define KEY_SW2_UP 					0x00000020
 #define KEY_SW2_DOWN				0x00000040
-#define KEY_SW2_LEFT   			0x00000080
+#define KEY_SW2_LEFT   			    0x00000080
 #define KEY_SW2_RIGHT  			0x00000100
 #define KEY_SW2_ENTER				0x00000200
 
@@ -590,12 +970,7 @@ void Motor_ToggleBrakeRun(char channel)
     }
 }
 
-// 步进电机控制相关变量
-static bool stepper_running = false;
-static uint16_t target_steps_A = 0;
-static uint16_t target_steps_B = 0;
-static uint16_t current_steps_A = 0;
-static uint16_t current_steps_B = 0;
+
 
 /**
  * @brief 设置步进电机目标步数
@@ -896,4 +1271,545 @@ void Stepper_Test_Demo(void)
     }
     
     UART_Transmit_Str(&huart1, (uint8_t*)"步进电机运行完成\r\n");
+}
+
+/**
+ * @brief 设置VD_FZ函数的目标执行次数
+ * @param count 目标执行次数
+ */
+void VD_FZ_SetTargetCount(uint16_t count)
+{
+    vd_fz_target_count = count;
+    vd_fz_count = 0; // 重置当前次数
+}
+
+/**
+ * @brief 启用VD_FZ次数控制
+ */
+void VD_FZ_Enable(void)
+{
+    vd_fz_enabled = true;
+}
+
+/**
+ * @brief 禁用VD_FZ次数控制
+ */
+void VD_FZ_Disable(void)
+{
+    vd_fz_enabled = false;
+}
+
+/**
+ * @brief 获取VD_FZ当前执行次数
+ * @return 当前执行次数
+ */
+uint16_t VD_FZ_GetCurrentCount(void)
+{
+    return vd_fz_count;
+}
+
+/**
+ * @brief 获取VD_FZ目标执行次数
+ * @return 目标执行次数
+ */
+uint16_t VD_FZ_GetTargetCount(void)
+{
+    return vd_fz_target_count;
+}
+
+/**
+ * @brief 重置VD_FZ执行次数
+ */
+void VD_FZ_ResetCount(void)
+{
+    vd_fz_count = 0;
+}
+
+/**
+ * @brief 检查VD_FZ是否已完成目标次数
+ * @return true: 已完成, false: 未完成
+ */
+bool VD_FZ_IsCompleted(void)
+{
+    if (!vd_fz_enabled) {
+        return false; // 未启用次数控制时返回false
+    }
+    return (vd_fz_count >= vd_fz_target_count);
+}
+
+/**
+ * @brief 通过0x24寄存器设置PSUMA的值
+ * @param psuma_value PSUMA的值 (0-4095, 12位)
+ * @note 0x24寄存器的0-11位对应PSUMA的值
+ */
+void Set_PSUMA_Via_Register(uint16_t psuma_value)
+{
+    uint16_t reg_value;
+    
+    // 限制PSUMA值在12位范围内 (0-4095)
+    psuma_value &= 0x0FFF;
+    
+    // 读取0x24寄存器当前值
+    Spi__Read(0x24, &reg_value);
+    
+    // 清除0-11位 (PSUMA位)
+    reg_value &= 0xF000;
+    
+    // 设置新的PSUMA值到0-11位
+    reg_value |= psuma_value;
+    
+    // 写回0x24寄存器
+    Spi_Write(0x24, reg_value);
+    
+    // 同时更新全局变量PSUMA
+    PSUMA = psuma_value;
+}
+
+/**
+ * @brief 从0x24寄存器读取PSUMA的值
+ * @return PSUMA的当前值 (0-4095)
+ */
+uint16_t Get_PSUMA_From_Register(void)
+{
+    uint16_t reg_value;
+    
+    // 读取0x24寄存器值
+    Spi__Read(0x24, &reg_value);
+    
+    // 提取0-11位作为PSUMA值
+    uint16_t psuma_value = reg_value & 0x0FFF;
+    
+    // 同时更新全局变量PSUMA
+    PSUMA = psuma_value;
+    
+    return psuma_value;
+}
+
+// ==================== 步进电机12 API函数 ====================
+/**
+ * @brief 设置步进电机12的目标位置
+ * @param target_pos 目标位置值
+ */
+void Motor12_SetTargetPosition(int32_t target_pos)
+{
+    motor12_target_position = target_pos;
+}
+
+/**
+ * @brief 获取步进电机12的当前位置
+ * @return 当前位置值
+ */
+int32_t Motor12_GetCurrentPosition(void)
+{
+    return motor12_current_position;
+}
+
+/**
+ * @brief 获取步进电机12的目标位置
+ * @return 目标位置值
+ */
+int32_t Motor12_GetTargetPosition(void)
+{
+    return motor12_target_position;
+}
+
+/**
+ * @brief 设置步进电机12的当前位置 (用于位置校准)
+ * @param current_pos 当前位置值
+ */
+void Motor12_SetCurrentPosition(int32_t current_pos)
+{
+    motor12_current_position = current_pos;
+}
+
+/**
+ * @brief 启用步进电机12位置控制
+ */
+void Motor12_EnablePositionControl(void)
+{
+    motor12_position_control_enabled = true;
+}
+
+/**
+ * @brief 禁用步进电机12位置控制
+ */
+void Motor12_DisablePositionControl(void)
+{
+    motor12_position_control_enabled = false;
+}
+
+/**
+ * @brief 检查步进电机12是否已到达目标位置
+ * @return true: 已到达, false: 未到达
+ */
+bool Motor12_IsAtTargetPosition(void)
+{
+    return (motor12_current_position == motor12_target_position);
+}
+
+/**
+ * @brief 获取步进电机12的位置误差
+ * @return 位置误差 (目标位置 - 当前位置)
+ */
+int32_t Motor12_GetPositionError(void)
+{
+    return (motor12_target_position - motor12_current_position);
+}
+
+/**
+ * @brief 设置步进电机12每个周期的最大步数
+ * @param max_steps 最大步数 (1-4095)
+ */
+void Motor12_SetMaxStepsPerCycle(uint16_t max_steps)
+{
+    if (max_steps > 0 && max_steps <= 0x0FFF) {
+        motor12_max_steps_per_cycle = max_steps;
+    }
+}
+
+/**
+ * @brief 获取步进电机12每个周期的最大步数
+ * @return 最大步数
+ */
+uint16_t Motor12_GetMaxStepsPerCycle(void)
+{
+    return motor12_max_steps_per_cycle;
+}
+
+/**
+ * @brief 步进电机12位置复位 (设置当前位置和目标位置为0)
+ */
+void Motor12_ResetPosition(void)
+{
+    motor12_current_position = 0;
+    motor12_target_position = 0;
+}
+
+// ==================== 步进电机34 API函数 ====================
+/**
+ * @brief 设置步进电机34的目标位置
+ * @param target_pos 目标位置值
+ */
+void Motor34_SetTargetPosition(int32_t target_pos)
+{
+    motor34_target_position = target_pos;
+}
+
+/**
+ * @brief 获取步进电机34的当前位置
+ * @return 当前位置值
+ */
+int32_t Motor34_GetCurrentPosition(void)
+{
+    return motor34_current_position;
+}
+
+/**
+ * @brief 获取步进电机34的目标位置
+ * @return 目标位置值
+ */
+int32_t Motor34_GetTargetPosition(void)
+{
+    return motor34_target_position;
+}
+
+/**
+ * @brief 设置步进电机34的当前位置 (用于位置校准)
+ * @param current_pos 当前位置值
+ */
+void Motor34_SetCurrentPosition(int32_t current_pos)
+{
+    motor34_current_position = current_pos;
+}
+
+/**
+ * @brief 启用步进电机34位置控制
+ */
+void Motor34_EnablePositionControl(void)
+{
+    motor34_position_control_enabled = true;
+}
+
+/**
+ * @brief 禁用步进电机34位置控制
+ */
+void Motor34_DisablePositionControl(void)
+{
+    motor34_position_control_enabled = false;
+}
+
+/**
+ * @brief 检查步进电机34是否已到达目标位置
+ * @return true: 已到达, false: 未到达
+ */
+bool Motor34_IsAtTargetPosition(void)
+{
+    return (motor34_current_position == motor34_target_position);
+}
+
+/**
+ * @brief 获取步进电机34的位置误差
+ * @return 位置误差 (目标位置 - 当前位置)
+ */
+int32_t Motor34_GetPositionError(void)
+{
+    return (motor34_target_position - motor34_current_position);
+}
+
+/**
+ * @brief 设置步进电机34每个周期的最大步数
+ * @param max_steps 最大步数 (1-4095)
+ */
+void Motor34_SetMaxStepsPerCycle(uint16_t max_steps)
+{
+    if (max_steps > 0 && max_steps <= 0x0FFF) {
+        motor34_max_steps_per_cycle = max_steps;
+    }
+}
+
+/**
+ * @brief 获取步进电机34每个周期的最大步数
+ * @return 最大步数
+ */
+uint16_t Motor34_GetMaxStepsPerCycle(void)
+{
+    return motor34_max_steps_per_cycle;
+}
+
+/**
+ * @brief 步进电机34位置复位 (设置当前位置和目标位置为0)
+ */
+void Motor34_ResetPosition(void)
+{
+    motor34_current_position = 0;
+    motor34_target_position = 0;
+}
+
+// ==================== 步进电机56 API函数 ====================
+/**
+ * @brief 设置步进电机56的目标位置
+ * @param target_pos 目标位置值
+ */
+void Motor56_SetTargetPosition(int32_t target_pos)
+{
+    motor56_target_position = target_pos;
+}
+
+/**
+ * @brief 获取步进电机56的当前位置
+ * @return 当前位置值
+ */
+int32_t Motor56_GetCurrentPosition(void)
+{
+    return motor56_current_position;
+}
+
+/**
+ * @brief 获取步进电机56的目标位置
+ * @return 目标位置值
+ */
+int32_t Motor56_GetTargetPosition(void)
+{
+    return motor56_target_position;
+}
+
+/**
+ * @brief 设置步进电机56的当前位置 (用于位置校准)
+ * @param current_pos 当前位置值
+ */
+void Motor56_SetCurrentPosition(int32_t current_pos)
+{
+    motor56_current_position = current_pos;
+}
+
+/**
+ * @brief 启用步进电机56位置控制
+ */
+void Motor56_EnablePositionControl(void)
+{
+    motor56_position_control_enabled = true;
+}
+
+/**
+ * @brief 禁用步进电机56位置控制
+ */
+void Motor56_DisablePositionControl(void)
+{
+    motor56_position_control_enabled = false;
+}
+
+/**
+ * @brief 检查步进电机56是否已到达目标位置
+ * @return true: 已到达, false: 未到达
+ */
+bool Motor56_IsAtTargetPosition(void)
+{
+    return (motor56_current_position == motor56_target_position);
+}
+
+/**
+ * @brief 获取步进电机56的位置误差
+ * @return 位置误差 (目标位置 - 当前位置)
+ */
+int32_t Motor56_GetPositionError(void)
+{
+    return (motor56_target_position - motor56_current_position);
+}
+
+/**
+ * @brief 设置步进电机56每个周期的最大步数
+ * @param max_steps 最大步数 (1-4095)
+ */
+void Motor56_SetMaxStepsPerCycle(uint16_t max_steps)
+{
+    if (max_steps > 0 && max_steps <= 0x0FFF) {
+        motor56_max_steps_per_cycle = max_steps;
+    }
+}
+
+/**
+ * @brief 获取步进电机56每个周期的最大步数
+ * @return 最大步数
+ */
+uint16_t Motor56_GetMaxStepsPerCycle(void)
+{
+    return motor56_max_steps_per_cycle;
+}
+
+/**
+ * @brief 步进电机56位置复位 (设置当前位置和目标位置为0)
+ */
+void Motor56_ResetPosition(void)
+{
+    motor56_current_position = 0;
+    motor56_target_position = 0;
+}
+
+// ==================== 步进电机78 API函数 ====================
+/**
+ * @brief 设置步进电机78的目标位置
+ * @param target_pos 目标位置值
+ */
+void Motor78_SetTargetPosition(int32_t target_pos)
+{
+    motor78_target_position = target_pos;
+}
+
+/**
+ * @brief 获取步进电机78的当前位置
+ * @return 当前位置值
+ */
+int32_t Motor78_GetCurrentPosition(void)
+{
+    return motor78_current_position;
+}
+
+/**
+ * @brief 获取步进电机78的目标位置
+ * @return 目标位置值
+ */
+int32_t Motor78_GetTargetPosition(void)
+{
+    return motor78_target_position;
+}
+
+/**
+ * @brief 设置步进电机78的当前位置 (用于位置校准)
+ * @param current_pos 当前位置值
+ */
+void Motor78_SetCurrentPosition(int32_t current_pos)
+{
+    motor78_current_position = current_pos;
+}
+
+/**
+ * @brief 启用步进电机78位置控制
+ */
+void Motor78_EnablePositionControl(void)
+{
+    motor78_position_control_enabled = true;
+}
+
+/**
+ * @brief 禁用步进电机78位置控制
+ */
+void Motor78_DisablePositionControl(void)
+{
+    motor78_position_control_enabled = false;
+}
+
+/**
+ * @brief 检查步进电机78是否已到达目标位置
+ * @return true: 已到达, false: 未到达
+ */
+bool Motor78_IsAtTargetPosition(void)
+{
+    return (motor78_current_position == motor78_target_position);
+}
+
+/**
+ * @brief 获取步进电机78的位置误差
+ * @return 位置误差 (目标位置 - 当前位置)
+ */
+int32_t Motor78_GetPositionError(void)
+{
+    return (motor78_target_position - motor78_current_position);
+}
+
+/**
+ * @brief 设置步进电机78每个周期的最大步数
+ * @param max_steps 最大步数 (1-4095)
+ */
+void Motor78_SetMaxStepsPerCycle(uint16_t max_steps)
+{
+    if (max_steps > 0 && max_steps <= 0x0FFF) {
+        motor78_max_steps_per_cycle = max_steps;
+    }
+}
+
+/**
+ * @brief 获取步进电机78每个周期的最大步数
+ * @return 最大步数
+ */
+uint16_t Motor78_GetMaxStepsPerCycle(void)
+{
+    return motor78_max_steps_per_cycle;
+}
+
+/**
+ * @brief 步进电机78位置复位 (设置当前位置和目标位置为0)
+ */
+void Motor78_ResetPosition(void)
+{
+    motor78_current_position = 0;
+    motor78_target_position = 0;
+}
+
+/**
+ * @brief 步进电机34方向控制函数
+ * @param pos 步数 (0-4095, 12位)
+ * @param direction 方向 (0=正方向, 1=负方向)
+ */
+void set_34_with_direction(uint16_t pos, uint8_t direction)
+{
+    uint16_t register_value;
+    
+    // 限制步数在12位范围内
+    pos = pos & 0x0FFF;
+    
+    // 构造寄存器值：保持0xcfff的高4位，设置D12位方向，设置步数
+    if (direction == 0) {
+        // 正方向：D12位=0
+        register_value = (0xcfff & 0xF000) | pos;
+    } else {
+        // 负方向：D12位=1
+        register_value = (0xcfff & 0xF000) | 0x1000 | pos;
+    }
+    
+    Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+    Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
+    Spi_Write(0x29, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+    Spi_Write(0x2a, INTCTCD); // 设置步进周期
+    Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+    VD_FZ();
 }

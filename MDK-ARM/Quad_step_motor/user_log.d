@@ -39,5 +39,6 @@ quad_step_motor\user_log.o: ..\User\UART\uart.h
 quad_step_motor\user_log.o: ..\User\LOG\user_log.h
 quad_step_motor\user_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\user_log.o: ..\User\control.h
+quad_step_motor\user_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 quad_step_motor\user_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 quad_step_motor\user_log.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

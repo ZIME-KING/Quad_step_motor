@@ -16,6 +16,7 @@ typedef struct
 
 extern TIME_TYPE_ST Task_1;
 extern TIME_TYPE_ST Task_5;
+extern TIME_TYPE_ST Task_20;
 extern TIME_TYPE_ST Task_50;
 extern TIME_TYPE_ST Task_100;
 extern TIME_TYPE_ST Task_200;

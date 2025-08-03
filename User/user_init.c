@@ -17,6 +17,16 @@ void Start_Peripheral(){
     UART_Transmit_Str(&huart1,(uint8_t*)"usart_1_ok\r\n");
     HAL_Delay(20);
 
+	
+//////测试用gpio配置
+//	  GPIO_InitTypeDef GPIO_InitStruct = {0};
+//		
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET);
+//		GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4;
+//		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+//		GPIO_InitStruct.Pull = GPIO_NOPULL;
+//		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+//		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 int a;
@@ -24,8 +34,8 @@ int a;
 //定时器回调函数
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance==TIM2){
-		// VD周期 - 步进电机控制
-		VD_Stepper_Control();
+		//VD周期 - 步进电机控制
+		//VD_Stepper_Control();
 	}
 	if(htim->Instance==TIM3){
 	}

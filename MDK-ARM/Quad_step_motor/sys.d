@@ -40,4 +40,5 @@ quad_step_motor\sys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 quad_step_motor\sys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\sys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 quad_step_motor\sys.o: ..\User\control.h
+quad_step_motor\sys.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 quad_step_motor\sys.o: ..\User\SYS\sys.h

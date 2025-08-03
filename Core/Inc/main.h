@@ -70,8 +70,6 @@ extern UART_HandleTypeDef huart3;
 
 /* USER CODE END EM */
 
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -80,6 +78,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define VD12_Pin GPIO_PIN_0
+#define VD12_GPIO_Port GPIOA
+#define VD34_Pin GPIO_PIN_1
+#define VD34_GPIO_Port GPIOA
+#define VD56_Pin GPIO_PIN_2
+#define VD56_GPIO_Port GPIOA
+#define VD78_Pin GPIO_PIN_3
+#define VD78_GPIO_Port GPIOA
+#define VD9A_Pin GPIO_PIN_6
+#define VD9A_GPIO_Port GPIOA
 #define SPI_CS_Pin GPIO_PIN_12
 #define SPI_CS_GPIO_Port GPIOB
 #define MS_RSTB_Pin GPIO_PIN_8

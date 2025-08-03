@@ -40,4 +40,5 @@ quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 quad_step_motor\stm32f1xx_it.o: ..\User\control.h
+quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 quad_step_motor\stm32f1xx_it.o: ../Core/Inc/stm32f1xx_it.h

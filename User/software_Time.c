@@ -9,6 +9,7 @@
 
  TIME_TYPE_ST Task_1;
  TIME_TYPE_ST Task_5;
+ TIME_TYPE_ST Task_20;
  TIME_TYPE_ST Task_25;
  TIME_TYPE_ST Task_50;
  TIME_TYPE_ST Task_100;
@@ -30,6 +31,7 @@ void delay_us(uint32_t i){
 void SetTime(){
 	Task_1.TimeInter     = 1;//设定间隔时间
 	Task_5.TimeInter     = 5;
+	Task_20.TimeInter    = 20;
 	Task_25.TimeInter    = 25;
 	Task_50.TimeInter    = 50;
 	Task_100.TimeInter   = 100;
