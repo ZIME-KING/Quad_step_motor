@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "main.h": "c"
+        "main.h": "c",
+        "control.h": "c",
+        "user_function.h": "c",
+        "pelco_d_protocol.h": "c"
     }
 }

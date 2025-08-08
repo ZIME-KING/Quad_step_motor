@@ -9,24 +9,12 @@ void Start_Peripheral(){
 	HAL_TIM_Base_Start_IT(&htim3);  //Start timer interrupt启动定时器中断（同时就启动定时器了不用单独启动定时器）
 	HAL_TIM_Base_Start_IT(&htim4);  //Start timer interrupt启动定时器中断（同时就启动定时器了不用单独启动定时器）
 
-    //HAL_UART_Receive_IT(&huart2,uart_2_buffer,1);		//uart2 模拟dmx512只发送不接收，不开启接受中断
-	//HAL_UART_Receive_IT(&huart3,uart_3_buffer,1);
-    HAL_UART_Receive_IT(&huart1,uart_1_buffer,1);
+  //HAL_UART_Receive_IT(&huart2,uart_2_buffer,1);		//uart2 模拟dmx512只发送不接收，不开启接受中断
+	HAL_UART_Receive_IT(&huart3,uart_3_buffer,1);
+  HAL_UART_Receive_IT(&huart1,uart_1_buffer,1);
 
-
-    UART_Transmit_Str(&huart1,(uint8_t*)"usart_1_ok\r\n");
-    HAL_Delay(20);
-
-	
-//////测试用gpio配置
-//	  GPIO_InitTypeDef GPIO_InitStruct = {0};
-//		
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET);
-//		GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4;
-//		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//		GPIO_InitStruct.Pull = GPIO_NOPULL;
-//		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  UART_Transmit_Str(&huart1,(uint8_t*)"usart_1_ok\r\n");
+  HAL_Delay(20);
 }
 
 int a;

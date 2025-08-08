@@ -1,8 +1,8 @@
 Dependencies for Project 'Quad_step_motor', Target 'Quad_step_motor': (DO NOT MODIFY !)
 CompilerVersion: 5060750::V5.06 update 6 (build 750)::ARMCC
 F (startup_stm32f103xb.s)(0x688CBC55)(--cpu Cortex-M3 -g --apcs=interwork -I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include--pd "__UVISION_VERSION SETA 537" --pd "_RTE_ SETA 1" --pd "STM32F10X_MD SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32f103xb.lst --xref -o quad_step_motor\startup_stm32f103xb.o --depend quad_step_motor\startup_stm32f103xb.d)
-F (../Core/Src/main.c)(0x688DE1B7)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\main.o --omf_browse quad_step_motor\main.crf --depend quad_step_motor\main.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+F (../Core/Src/main.c)(0x68907E2C)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\main.o --omf_browse quad_step_motor\main.crf --depend quad_step_motor\main.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -32,17 +32,18 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-F (../Core/Src/stm32f1xx_it.c)(0x688DDDF5)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\stm32f1xx_it.o --omf_browse quad_step_motor\stm32f1xx_it.crf --depend quad_step_motor\stm32f1xx_it.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+F (../Core/Src/stm32f1xx_it.c)(0x68907FA9)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\stm32f1xx_it.o --omf_browse quad_step_motor\stm32f1xx_it.crf --depend quad_step_motor\stm32f1xx_it.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -72,18 +73,19 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-I (../Core/Inc/stm32f1xx_it.h)(0x688CAED7)
-F (../Core/Src/stm32f1xx_hal_msp.c)(0x688CAED7)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\stm32f1xx_hal_msp.o --omf_browse quad_step_motor\stm32f1xx_hal_msp.crf --depend quad_step_motor\stm32f1xx_hal_msp.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+I (../Core/Inc/stm32f1xx_it.h)(0x68907FA9)
+F (../Core/Src/stm32f1xx_hal_msp.c)(0x68907FA9)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\stm32f1xx_hal_msp.o --omf_browse quad_step_motor\stm32f1xx_hal_msp.crf --depend quad_step_motor\stm32f1xx_hal_msp.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -113,15 +115,16 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
 F (../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c)(0x68624D43)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\stm32f1xx_hal_gpio_ex.o --omf_browse quad_step_motor\stm32f1xx_hal_gpio_ex.crf --depend quad_step_motor\stm32f1xx_hal_gpio_ex.d)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
@@ -586,8 +589,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
-F (..\User\software_Time.c)(0x688F3887)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\software_time.o --omf_browse quad_step_motor\software_time.crf --depend quad_step_motor\software_time.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+F (..\User\software_Time.c)(0x68905B12)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\software_time.o --omf_browse quad_step_motor\software_time.crf --depend quad_step_motor\software_time.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -617,17 +620,18 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-F (..\User\user_function.c)(0x688F5B2E)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_function.o --omf_browse quad_step_motor\user_function.crf --depend quad_step_motor\user_function.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+F (..\User\user_function.c)(0x68932E1B)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_function.o --omf_browse quad_step_motor\user_function.crf --depend quad_step_motor\user_function.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -657,17 +661,18 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-F (..\User\user_init.c)(0x688F290F)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_init.o --omf_browse quad_step_motor\user_init.crf --depend quad_step_motor\user_init.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+F (..\User\user_init.c)(0x68907DBE)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_init.o --omf_browse quad_step_motor\user_init.crf --depend quad_step_motor\user_init.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -697,17 +702,18 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-F (..\User\UART\uart.c)(0x688CA056)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\uart.o --omf_browse quad_step_motor\uart.crf --depend quad_step_motor\uart.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+F (..\User\UART\uart.c)(0x689080A3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\uart.o --omf_browse quad_step_motor\uart.crf --depend quad_step_motor\uart.d)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -737,17 +743,18 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
 F (..\User\SYS\sys.c)(0x68638A35)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\sys.o --omf_browse quad_step_motor\sys.crf --depend quad_step_motor\sys.d)
-I (../Core/Inc/main.h)(0x688DE60F)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -777,19 +784,20 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
 I (..\User\SYS\sys.h)(0x60424F84)
-F (..\User\control.c)(0x688F59F1)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\control.o --omf_browse quad_step_motor\control.crf --depend quad_step_motor\control.d)
-I (..\User\control.h)(0x688F5209)
-I (../Core/Inc/main.h)(0x688DE60F)
+F (..\User\control.c)(0x6892F4FF)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\control.o --omf_browse quad_step_motor\control.crf --depend quad_step_motor\control.d)
+I (..\User\control.h)(0x6890354D)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -819,17 +827,64 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
-I (..\User\LOG\user_log.h)(0x688CC481)
+I (..\User\LOG\user_log.h)(0x68905A64)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
-F (..\User\LOG\user_log.c)(0x688CC488)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_log.o --omf_browse quad_step_motor\user_log.crf --depend quad_step_motor\user_log.d)
-I (..\User\LOG\user_log.h)(0x688CC481)
-I (../Core/Inc/main.h)(0x688DE60F)
+F (..\User\pelco_d_protocol.c)(0x6890B2B3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\pelco_d_protocol.o --omf_browse quad_step_motor\pelco_d_protocol.crf --depend quad_step_motor\pelco_d_protocol.d)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
+F (..\User\pelco_d_integration_example.c)(0x689303FC)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\pelco_d_integration_example.o --omf_browse quad_step_motor\pelco_d_integration_example.crf --depend quad_step_motor\pelco_d_integration_example.d)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (..\User\control.h)(0x6890354D)
+I (../Core/Inc/main.h)(0x689077AE)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
+I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h)(0x68624D43)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h)(0x68624D43)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h)(0x68624D43)
+I (../Drivers/CMSIS/Include/core_cm3.h)(0x68624D15)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x68624D15)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x68624D15)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x68624D15)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x68624D43)
+I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x599ECD2C)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_exti.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
+I (..\User\software_Time.h)(0x688F3895)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\user_init.h)(0x688DF241)
+I (..\User\UART\uart.h)(0x68638AC4)
+I (..\User\LOG\user_log.h)(0x68905A64)
+I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
+F (..\User\LOG\user_log.c)(0x68907DC3)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ..\User -I ..\User\SYS -I ..\User\UART -I ..\User\LOG-I.\RTE\_Quad_step_motor-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F1xx_DFP\2.4.1\Device\Include-D__UVISION_VERSION="537" -D_RTE_ -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o quad_step_motor\user_log.o --omf_browse quad_step_motor\user_log.crf --depend quad_step_motor\user_log.d)
+I (..\User\LOG\user_log.h)(0x68905A64)
+I (../Core/Inc/main.h)(0x689077AE)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x68624D43)
 I (../Core/Inc/stm32f1xx_hal_conf.h)(0x688CB537)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x68624D43)
@@ -859,11 +914,12 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h)(0x68624D43)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x68624D43)
 I (..\User\software_Time.h)(0x688F3895)
-I (..\User\user_function.h)(0x688F5ADD)
+I (..\User\user_function.h)(0x689039FB)
+I (..\User\control.h)(0x6890354D)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
 I (..\User\user_init.h)(0x688DF241)
 I (..\User\UART\uart.h)(0x68638AC4)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
-I (..\User\control.h)(0x688F5209)
-I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x599ECD2E)
+I (..\User\pelco_d_protocol.h)(0x6890B08F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x599ECD2A)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)

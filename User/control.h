@@ -31,6 +31,11 @@ extern void Init_MS41968(void);
 extern void Key_Function(uint32_t u32KeyValue);
 extern void Reset_MS41968(void);
 extern void VD_FZ(void);
+void VD_FZ_Motor12(void);
+void VD_FZ_Motor34(void);
+void VD_FZ_Motor56(void);
+void VD_FZ_Motor78(void);
+void VD_FZ_Motor9A(void);
 extern void VD_IS(void);
 
 // 电机控制函数声明
@@ -122,13 +127,80 @@ extern void Motor78_SetMaxStepsPerCycle(uint16_t max_steps);
 extern uint16_t Motor78_GetMaxStepsPerCycle(void);
 extern void Motor78_ResetPosition(void);
 
+// 步进电机9A位置控制函数声明
+extern void Motor9A_PositionControl(void);
+extern void Motor9A_SetTargetPosition(int32_t target_pos);
+extern int32_t Motor9A_GetCurrentPosition(void);
+extern int32_t Motor9A_GetTargetPosition(void);
+extern void Motor9A_SetCurrentPosition(int32_t current_pos);
+extern void Motor9A_EnablePositionControl(void);
+extern void Motor9A_DisablePositionControl(void);
+extern bool Motor9A_IsAtTargetPosition(void);
+extern int32_t Motor9A_GetPositionError(void);
+extern void Motor9A_SetMaxStepsPerCycle(uint16_t max_steps);
+extern uint16_t Motor9A_GetMaxStepsPerCycle(void);
+extern void Motor9A_ResetPosition(void);
+
 // 步进电机34方向控制函数声明
 extern void set_34_with_direction(uint16_t pos, uint8_t direction);
+
+// 电机复位状态枚举
+typedef enum {
+    MOTOR_RESET_IDLE = 0,
+    MOTOR_RESET_MOVING,
+    MOTOR_RESET_COMPLETED,
+    MOTOR_RESET_TIMEOUT
+} MotorResetState_t;
+
+// 电机复位函数声明
+extern int Motor_ZOOM3_Reset(void);
+extern int Motor_FOCUS_Reset(void);
+extern int Motor_ZOOM2_Reset(void);
+extern int Motor_ZOOM1_Reset(void);
+extern int Motor_IRIS_Reset(void);
+extern int Motors_ResetAll(void);
+
+// 非阻塞复位函数声明
+extern int Motor_ZOOM3_Reset_Start(void);
+extern MotorResetState_t Motor_ZOOM3_Reset_Process(void);
+extern MotorResetState_t Motor_ZOOM3_Reset_GetState(void);
+extern void Motor_ZOOM3_Reset_Clear(void);
+
+extern int Motor_FOCUS_Reset_Start(void);
+extern MotorResetState_t Motor_FOCUS_Reset_Process(void);
+extern MotorResetState_t Motor_FOCUS_Reset_GetState(void);
+extern void Motor_FOCUS_Reset_Clear(void);
+
+extern int Motor_ZOOM2_Reset_Start(void);
+extern MotorResetState_t Motor_ZOOM2_Reset_Process(void);
+extern MotorResetState_t Motor_ZOOM2_Reset_GetState(void);
+extern void Motor_ZOOM2_Reset_Clear(void);
+
+extern int Motor_ZOOM1_Reset_Start(void);
+extern MotorResetState_t Motor_ZOOM1_Reset_Process(void);
+extern MotorResetState_t Motor_ZOOM1_Reset_GetState(void);
+extern void Motor_ZOOM1_Reset_Clear(void);
+
+extern int Motor_IRIS_Reset_Start(void);
+extern MotorResetState_t Motor_IRIS_Reset_Process(void);
+extern MotorResetState_t Motor_IRIS_Reset_GetState(void);
+extern void Motor_IRIS_Reset_Clear(void);
+
+// 电机初始化函数声明
+extern int Motor_ZOOM3_Initialize(void);
+extern int Motor_FOCUS_Initialize(void);
+extern int Motor_ZOOM2_Initialize(void);
+extern int Motor_ZOOM1_Initialize(void);
+extern int Motor_IRIS_Initialize(void);
+extern int Motors_InitializeAll(void);
+extern bool Motor_CheckCOStatus(const char* motor_name, GPIO_TypeDef* gpio_port, uint16_t gpio_pin);
+extern void Motors_CheckAllCOStatus(void);
 
 // 步进电机位置信息打印函数声明
 extern void Motor12_PrintPositions(void);
 extern void Motor34_PrintPositions(void);
 extern void Motor56_PrintPositions(void);
 extern void Motor78_PrintPositions(void);
+extern void Motor9A_PrintPositions(void);
 
 #endif

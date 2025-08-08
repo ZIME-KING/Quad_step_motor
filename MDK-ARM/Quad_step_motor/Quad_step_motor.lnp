@@ -25,6 +25,8 @@
 "quad_step_motor\uart.o"
 "quad_step_motor\sys.o"
 "quad_step_motor\control.o"
+"quad_step_motor\pelco_d_protocol.o"
+"quad_step_motor\pelco_d_integration_example.o"
 "quad_step_motor\user_log.o"
 --strict --scatter "Quad_step_motor\Quad_step_motor.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

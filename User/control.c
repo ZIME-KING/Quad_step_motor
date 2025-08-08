@@ -31,22 +31,22 @@ uint16_t MICROB = 0X0000;  // 细分数
 
 
 
-uint16_t PSUMA = 0;	   // 步进数A
-uint16_t PSUMB = 0;	   // 步进数B
-uint16_t PSUMC = 0;	   // 步进数C
-uint16_t PSUMD = 0;	   // 步进数D
+uint16_t PSUMA = 50;	   // 步进数A
+uint16_t PSUMB = 50;	   // 步进数B
+uint16_t PSUMC = 50;	   // 步进数C
+uint16_t PSUMD = 50;	   // 步进数D
 
-//当 INTCTAB[15:0]=1024 时，64 细分下每步周期 12×900/27MHz=0.4ms
+//当 INTCTAB[15:0]=900 时，64 细分下每步周期 12×900/27MHz=0.4ms
 
-//当 INTCTAB[15:0]=1024 时，256 细分下每步周期 3×900/27MHz=0.1ms
+//当 INTCTAB[15:0]=900 时，256 细分下每步周期 3×900/27MHz=0.1ms
 
 
 //设置为900，0.1ms一步 一个VD周期按20ms->50hz,最大设置为200步
-uint16_t INTCTAB = 900; // 每步周期AB
-uint16_t INTCTCD = 900; // 每步周期CD
-uint16_t INTCTEF = 900; // 每步周期EF
-uint16_t INTCTGH = 900; // 每步周期GH
-uint16_t INTCTIJ = 900; // 每步周期GH
+uint16_t INTCTAB = 703; // 每步周期AB
+uint16_t INTCTCD = 703; // 每步周期CD
+uint16_t INTCTEF = 703; // 每步周期EF
+uint16_t INTCTGH = 703; // 每步周期GH
+uint16_t INTCTIJ = 703; // 每步周期GH
 
 
 
@@ -72,25 +72,31 @@ static bool vd_fz_enabled = false;      // VD_FZ使能标志
 static int32_t motor12_current_position = 0;  // 当前位置
 static int32_t motor12_target_position = 0;   // 目标位置
 static bool motor12_position_control_enabled = true; // 位置控制使能标志
-static uint16_t motor12_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+static uint16_t motor12_max_steps_per_cycle = 32;    // 每个20ms周期最大步数
 
 // 步进电机34位置控制相关变量
 static int32_t motor34_current_position = 0;  // 当前位置
 static int32_t motor34_target_position = 0;   // 目标位置
 static bool motor34_position_control_enabled = true; // 位置控制使能标志
-static uint16_t motor34_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+static uint16_t motor34_max_steps_per_cycle = 32;    // 每个20ms周期最大步数
 
 // 步进电机56位置控制相关变量
 static int32_t motor56_current_position = 0;  // 当前位置
 static int32_t motor56_target_position = 0;   // 目标位置
 static bool motor56_position_control_enabled = true; // 位置控制使能标志
-static uint16_t motor56_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+static uint16_t motor56_max_steps_per_cycle = 32;    // 每个20ms周期最大步数
 
 // 步进电机78位置控制相关变量
 static int32_t motor78_current_position = 0;  // 当前位置
 static int32_t motor78_target_position = 0;   // 目标位置
 static bool motor78_position_control_enabled = true; // 位置控制使能标志
-static uint16_t motor78_max_steps_per_cycle = 200;    // 每个20ms周期最大步数
+static uint16_t motor78_max_steps_per_cycle = 32;    // 每个20ms周期最大步数
+
+// 步进电机9A位置控制相关变量
+static int32_t motor9a_current_position = 0;  // 当前位置
+static int32_t motor9a_target_position = 0;   // 目标位置
+static bool motor9a_position_control_enabled = true; // 位置控制使能标志
+static uint16_t motor9a_max_steps_per_cycle = 32;    // 每个20ms周期最大步数
 //timer_oc_parameter_struct timer0_ocintpara;
 //timer_parameter_struct timer0_initpara;
 
@@ -181,11 +187,12 @@ void Init_MS41968(void)
     Spi_Write(0x34, INTCTGH); // 设置步进周期
     Spi_Write(0x35, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
 
-//    Spi_Write(0x36, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-//    Spi_Write(0x37, 0xd8d8); // 设置最大占空比为 90%
-//    Spi_Write(0x38, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
-//    Spi_Write(0x39, INTCTAB); // 设置步进周期
-//    Spi_Write(0x3a, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+    Spi_Write(0x36, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+    Spi_Write(0x37, 0xd8d8); // 设置最大占空比为 90%
+    Spi_Write(0x38, 0xcfff); // 设置LED输出  电机输出使能/关断  启动/刹车 电流方向 步数
+    Spi_Write(0x39, INTCTAB); // 设置步进周期
+    Spi_Write(0x3a, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+
     Spi_Write(0x3b, 0x0000); // 设置直流电机通道A驱动状态  PWM频率 PWM占空比
     Spi_Write(0x3c, 0x0000); // 设置直流电机通道B驱动状态  PWM频率 PWM占空比
     Spi_Write(0x3e, 0x0000); // 错误指示寄存器
@@ -200,15 +207,15 @@ void Init_MS41968(void)
     Spi_Write(0x0b, 0x0480); // 设置光圈模块使能 TESTEN1使能       0x0480
 }
 
-void set_34(uint16_t pos){
-    Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-    Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
-    // 保持0xcfff的高4位，D12位=0（正方向），设置步数（低12位）
-    Spi_Write(0x29, (0xcfff&0xF000)|(pos&0x0FFF)); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12=0正方向) 步数(D11-D0)
-    Spi_Write(0x2a, INTCTCD); // 设置步进周期
-    Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-    VD_FZ();
- }
+// void set_34(uint16_t pos){
+//     Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+//     Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
+//     // 保持0xcfff的高4位，D12位=0（正方向），设置步数（低12位）
+//     Spi_Write(0x29, (0xcfff&0xF000)|(pos&0x0FFF)); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12=0正方向) 步数(D11-D0)
+//     Spi_Write(0x2a, INTCTCD); // 设置步进周期
+//     Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+//     VD_FZ_Motor12();
+//  }
 
 /**
  * @brief 打印步进电机12的当前位置和目标位置
@@ -271,6 +278,21 @@ void Motor78_PrintPositions(void)
 }
 
 /**
+ * @brief 打印步进电机9A的当前位置和目标位置
+ */
+void Motor9A_PrintPositions(void)
+{
+    LOG_Print(LOG_LEVEL_INFO,"=== 步进电机9A位置信息 ===\r\n");
+    LOG_Print(LOG_LEVEL_INFO,"当前位置: %d\r\n", motor9a_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"目标位置: %d\r\n", motor9a_target_position);
+    LOG_Print(LOG_LEVEL_INFO,"位置误差: %d\r\n", motor9a_target_position - motor9a_current_position);
+    LOG_Print(LOG_LEVEL_INFO,"控制状态: %s\r\n", motor9a_position_control_enabled ? "启用" : "禁用");
+    LOG_Print(LOG_LEVEL_INFO,"每周期最大步数: %d\r\n", motor9a_max_steps_per_cycle);
+    LOG_Print(LOG_LEVEL_INFO,"是否到达目标: %s\r\n", (motor9a_current_position == motor9a_target_position) ? "是" : "否");
+    LOG_Print(LOG_LEVEL_INFO,"========================\r\n");
+}
+
+/**
  * @brief 步进电机12位置控制函数 (每20ms调用一次)
  * 根据目标位置自动计算并执行步进
  */
@@ -283,6 +305,10 @@ void Motor12_PositionControl(void)
     int32_t position_error = motor12_target_position - motor12_current_position;
     
     if (position_error == 0) {
+			
+				Spi_Write(0x24, 0x0000); //
+				VD_FZ_Motor12();
+				Motor12_DisablePositionControl(); 	//到达位置后关闭位置控制,设置目标值后要手动开启位置控制
         return; // 已到达目标位置
     }
     // 确定运动方向和步数
@@ -291,15 +317,13 @@ void Motor12_PositionControl(void)
     
     if (position_error > 0) {
         // 正方向运动 - D12位=0表示正方向
-        steps_to_move = (position_error > motor12_max_steps_per_cycle) ? 
-                       motor12_max_steps_per_cycle : (uint16_t)position_error;
+        steps_to_move = (position_error > motor12_max_steps_per_cycle) ? motor12_max_steps_per_cycle : (uint16_t)position_error;
         // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
         register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
     } else {
         // 负方向运动 - D12位=1表示负方向
         int32_t abs_error = -position_error;
-        steps_to_move = (abs_error > motor12_max_steps_per_cycle) ? 
-                       motor12_max_steps_per_cycle : (uint16_t)abs_error;
+        steps_to_move = (abs_error > motor12_max_steps_per_cycle) ? motor12_max_steps_per_cycle : (uint16_t)abs_error;
         // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
         register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
     }
@@ -316,12 +340,12 @@ void Motor12_PositionControl(void)
     }
     if (steps_to_move > 0) {
         // 执行步进 - Motor12使用寄存器0x21-0x25
-        Spi_Write(0x21, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-        Spi_Write(0x22, 0xd8d8); // 设置最大占空比为 90%
-        Spi_Write(0x23, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
-        Spi_Write(0x24, INTCTAB); // 设置步进周期
-        Spi_Write(0x25, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-        VD_FZ();
+        Spi_Write(0x22, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x23, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x24, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x25, INTCTAB); // 设置步进周期
+        Spi_Write(0x26, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ_Motor12();
         
         // 更新当前位置
         if (position_error > 0) {
@@ -329,6 +353,8 @@ void Motor12_PositionControl(void)
         } else {
             motor12_current_position -= steps_to_move;
         }
+				
+				Motor12_PrintPositions();
     }
 }
 
@@ -345,6 +371,11 @@ void Motor34_PositionControl(void)
     int32_t position_error = motor34_target_position - motor34_current_position;
     
     if (position_error == 0) {
+			
+				Spi_Write(0x29, 0x0000); //
+				VD_FZ_Motor34();
+				Motor34_DisablePositionControl(); 	//到达位置后关闭位置控制,设置目标值后要手动开启位置控制
+			
         return; // 已到达目标位置
     }
     // 确定运动方向和步数
@@ -383,11 +414,11 @@ void Motor34_PositionControl(void)
         Spi_Write(0x29, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
         Spi_Write(0x2a, INTCTCD); // 设置步进周期
         Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-        VD_FZ();
-        
-        // 更新当前位置
-        if (position_error > 0) {
-            motor34_current_position += steps_to_move;
+        VD_FZ_Motor34();
+         
+         // 更新当前位置
+         if (position_error > 0) {
+             motor34_current_position += steps_to_move;
         } else {
             motor34_current_position -= steps_to_move;
         }
@@ -408,6 +439,11 @@ void Motor56_PositionControl(void)
     int32_t position_error = motor56_target_position - motor56_current_position;
     
     if (position_error == 0) {
+			
+				Spi_Write(0x2e, 0x0000); //
+				VD_FZ_Motor56();
+				Motor56_DisablePositionControl(); 	//到达位置后关闭位置控制,设置目标值后要手动开启位置控制
+			
         return; // 已到达目标位置
     }
     // 确定运动方向和步数
@@ -441,16 +477,16 @@ void Motor56_PositionControl(void)
     }
     if (steps_to_move > 0) {
         // 执行步进 - Motor56使用寄存器0x2d-0x31
-        Spi_Write(0x2d, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-        Spi_Write(0x2e, 0xd8d8); // 设置最大占空比为 90%
-        Spi_Write(0x2f, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
-        Spi_Write(0x30, INTCTEF); // 设置步进周期
-        Spi_Write(0x31, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-        VD_FZ();
-        
-        // 更新当前位置
-        if (position_error > 0) {
-            motor56_current_position += steps_to_move;
+        Spi_Write(0x2c, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x2d, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x2e, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x2F, INTCTEF); // 设置步进周期
+        Spi_Write(0x30, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ_Motor56();
+         
+         // 更新当前位置
+         if (position_error > 0) {
+             motor56_current_position += steps_to_move;
         } else {
             motor56_current_position -= steps_to_move;
         }
@@ -470,12 +506,18 @@ void Motor78_PositionControl(void)
     int32_t position_error = motor78_target_position - motor78_current_position;
     
     if (position_error == 0) {
+			
+				Spi_Write(0x33, 0x0000); //
+				VD_FZ_Motor78();
+				Motor78_DisablePositionControl(); 	//到达位置后关闭位置控制,设置目标值后要手动开启位置控制
         return; // 已到达目标位置
     }
     // 确定运动方向和步数
     uint16_t steps_to_move;
     uint16_t register_value;
-    
+   
+		//ZOOM2需要反向
+
     if (position_error > 0) {
         // 正方向运动 - D12位=0表示正方向
         steps_to_move = (position_error > motor78_max_steps_per_cycle) ? 
@@ -503,22 +545,212 @@ void Motor78_PositionControl(void)
     }
     if (steps_to_move > 0) {
         // 执行步进 - Motor78使用寄存器0x33-0x37
-        Spi_Write(0x33, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-        Spi_Write(0x34, 0xd8d8); // 设置最大占空比为 90%
-        Spi_Write(0x35, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
-        Spi_Write(0x36, INTCTGH); // 设置步进周期
-        Spi_Write(0x37, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-        VD_FZ();
-        
-        // 更新当前位置
-        if (position_error > 0) {
-            motor78_current_position += steps_to_move;
+        Spi_Write(0x31, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x32, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x33, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x34, INTCTGH); // 设置步进周期
+        Spi_Write(0x35, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ_Motor78();
+         
+         // 更新当前位置
+         if (position_error > 0) {
+             motor78_current_position += steps_to_move;
         } else {
             motor78_current_position -= steps_to_move;
         }
+						Motor78_PrintPositions();
+
     }
 }
 
+/**
+ * @brief 步进电机9A位置控制函数 (每20ms调用一次)
+ * 根据目标位置自动计算并执行步进
+ */
+void Motor9A_PositionControl(void)
+{
+    if (!motor9a_position_control_enabled) {
+        return; // 位置控制未启用
+    }
+    // 计算位置差
+    int32_t position_error = motor9a_target_position - motor9a_current_position;
+    
+    if (position_error == 0) {
+			
+				Spi_Write(0x38, 0x0000); //
+				VD_FZ_Motor9A();
+				Motor9A_DisablePositionControl(); 	//到达位置后关闭位置控制,设置目标值后要手动开启位置控制
+			
+        return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    uint16_t steps_to_move;
+    uint16_t register_value;
+    
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+        steps_to_move = (position_error > motor9a_max_steps_per_cycle) ? 
+                       motor9a_max_steps_per_cycle : (uint16_t)position_error;
+        // 保持0xcfff的高4位，清除D12位（正方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | (steps_to_move & 0x0FFF);
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+        int32_t abs_error = -position_error;
+        steps_to_move = (abs_error > motor9a_max_steps_per_cycle) ? 
+                       motor9a_max_steps_per_cycle : (uint16_t)abs_error;
+        // 保持0xcfff的高4位，设置D12位（负方向），设置步数（低12位）
+        register_value = (0xcfff & 0xF000) | 0x1000 | (steps_to_move & 0x0FFF);
+    }
+    
+    // 限制步数在12位范围内
+    if (steps_to_move > 0x0FFF) {
+        steps_to_move = 0x0FFF;
+        // 重新计算寄存器值
+        if (position_error > 0) {
+            register_value = (0xcfff & 0xF000) | 0x0FFF;
+        } else {
+            register_value = (0xcfff & 0xF000) | 0x1000 | 0x0FFF;
+        }
+    }
+    if (steps_to_move > 0) {
+        // 执行步进 - Motor9A使用寄存器0x39-0x3d
+        Spi_Write(0x36, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
+        Spi_Write(0x37, 0xd8d8); // 设置最大占空比为 90%
+        Spi_Write(0x38, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
+        Spi_Write(0x39, INTCTIJ); // 设置步进周期
+        Spi_Write(0x3a, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
+        VD_FZ_Motor9A();
+         
+         // 更新当前位置
+         if (position_error > 0) {
+             motor9a_current_position += steps_to_move;
+        } else {
+            motor9a_current_position -= steps_to_move;
+        }
+										Motor9A_PrintPositions();
+
+    }
+}
+
+/**
+ * @brief 步进电机12的VD脉冲控制函数
+ */
+void VD_FZ_Motor12(void)
+{
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
+    // 步进电机12的VD脉冲控制 - 使用VD12引脚
+    HAL_GPIO_WritePin(VD12_GPIO_Port, VD12_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    
+    // 延时20微秒（在中断中使用简单的循环延时）
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    
+    HAL_GPIO_WritePin(VD12_GPIO_Port, VD12_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+}
+
+/**
+ * @brief 步进电机34的VD脉冲控制函数
+ */
+void VD_FZ_Motor34(void)
+{
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
+    // 步进电机34的VD脉冲控制 - 使用VD34引脚
+    HAL_GPIO_WritePin(VD34_GPIO_Port, VD34_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    
+    // 延时20微秒（在中断中使用简单的循环延时）
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    
+    HAL_GPIO_WritePin(VD34_GPIO_Port, VD34_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+}
+
+/**
+ * @brief 步进电机56的VD脉冲控制函数
+ */
+void VD_FZ_Motor56(void)
+{
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
+    // 步进电机56的VD脉冲控制 - 使用VD56引脚
+    HAL_GPIO_WritePin(VD56_GPIO_Port, VD56_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    
+    // 延时20微秒（在中断中使用简单的循环延时）
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    
+    HAL_GPIO_WritePin(VD56_GPIO_Port, VD56_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+}
+
+/**
+ * @brief 步进电机78的VD脉冲控制函数
+ */
+void VD_FZ_Motor78(void)
+{
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
+    // 步进电机78的VD脉冲控制 - 使用VD78引脚
+    HAL_GPIO_WritePin(VD78_GPIO_Port, VD78_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    
+    // 延时20微秒（在中断中使用简单的循环延时）
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    
+    HAL_GPIO_WritePin(VD78_GPIO_Port, VD78_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+}
+
+/**
+ * @brief 步进电机9A的VD脉冲控制函数
+ */
+void VD_FZ_Motor9A(void)
+{
+    // 检查是否启用次数控制
+    if (vd_fz_enabled) {
+        // 检查是否已达到目标次数
+        if (vd_fz_count >= vd_fz_target_count) {
+            return; // 已达到目标次数，不执行
+        }
+        vd_fz_count++; // 增加执行次数
+    }
+    
+    // 步进电机9A的VD脉冲控制 - 使用VD9A引脚
+    HAL_GPIO_WritePin(VD9A_GPIO_Port, VD9A_Pin, GPIO_PIN_SET);   // VD脉冲高电平
+    
+    // 延时20微秒（在中断中使用简单的循环延时）
+    for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
+    
+    HAL_GPIO_WritePin(VD9A_GPIO_Port, VD9A_Pin, GPIO_PIN_RESET); // VD脉冲低电平
+}
+
+/**
+ * @brief 通用VD脉冲控制函数（保持向后兼容）
+ * 默认控制所有电机的VD引脚
+ */
 void VD_FZ(void)
 {
     // 检查是否启用次数控制
@@ -530,17 +762,21 @@ void VD_FZ(void)
         vd_fz_count++; // 增加执行次数
     }
     
-    // 步进电机A的VD脉冲控制
-    // 根据实际硬件连接，控制相应的GPIO引脚
-    // 这里使用MS_PLS1和MS_PLS2引脚作为示例
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_SET);   // VD脉冲高电平
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_SET);   // VD脉冲高电平
+    // 同时控制所有电机的VD引脚（向后兼容）
+    HAL_GPIO_WritePin(VD12_GPIO_Port, VD12_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(VD34_GPIO_Port, VD34_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(VD56_GPIO_Port, VD56_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(VD78_GPIO_Port, VD78_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(VD9A_GPIO_Port, VD9A_Pin, GPIO_PIN_SET);
     
     // 延时20微秒（在中断中使用简单的循环延时）
     for(volatile int i = 0; i < 10; i++);  // 简单延时，避免在中断中使用HAL_Delay
     
-    HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET); // VD脉冲低电平
-    HAL_GPIO_WritePin(GPIOA,  GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_6|GPIO_PIN_4, GPIO_PIN_RESET); // VD脉冲低电平
+    HAL_GPIO_WritePin(VD12_GPIO_Port, VD12_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(VD34_GPIO_Port, VD34_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(VD56_GPIO_Port, VD56_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(VD78_GPIO_Port, VD78_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(VD9A_GPIO_Port, VD9A_Pin, GPIO_PIN_RESET);
 }
 
 void VD_IS(void)
@@ -557,7 +793,7 @@ void VD_IS(void)
 }
 
 
-#define KEY_NO							0x00000000
+#define KEY_NO						0x00000000
 #define KEY_SW1_UP					0x00000001
 #define	KEY_SW1_DOWN				0x00000002
 #define	KEY_SW1_LEFT 				0x00000004
@@ -566,18 +802,18 @@ void VD_IS(void)
 #define KEY_SW2_UP 					0x00000020
 #define KEY_SW2_DOWN				0x00000040
 #define KEY_SW2_LEFT   			    0x00000080
-#define KEY_SW2_RIGHT  			0x00000100
+#define KEY_SW2_RIGHT  			    0x00000100
 #define KEY_SW2_ENTER				0x00000200
 
-#define	KEY_SHORT_DOWN			0x01000000
+#define	KEY_SHORT_DOWN			    0x01000000
 #define KEY_SHORT_UP				0x02000000
 #define	KEY_LONG_DOWN				0x04000000
 #define	KEY_LONG_UP					0x08000000
-#define	KEY_CONTI_DOWN			0x10000000
-#define KEY_LONG_DOWN_INIT	0x20000000
-#define KEY_LONG_UP_INIT		0x40000000
-#define KEY_LONG_DOWN_2S		0x80000000
-#define KEY_LONG_UP_2S			0x00800000
+#define	KEY_CONTI_DOWN			    0x10000000
+#define KEY_LONG_DOWN_INIT	        0x20000000
+#define KEY_LONG_UP_INIT		    0x40000000
+#define KEY_LONG_DOWN_2S		    0x80000000
+#define KEY_LONG_UP_2S			    0x00800000
 
 
 /*
@@ -849,18 +1085,18 @@ void SPI_Test_ReadAllRegisters(void)
     uint8_t addr;
     char buffer[64];
     
-    UART_Transmit_Str(&huart1, (uint8_t*)"\r\n=== SPI Register Dump Start ===\r\n");
+    UART_Transmit_Str(&huart3, (uint8_t*)"\r\n=== SPI Register Dump Start ===\r\n");
     
     // 读取常用的寄存器地址范围 (0x00-0x3F)
     for(addr = 0x00; addr <= 0x3F; addr++)
     {
         Spi__Read(addr, &regData);
         sprintf(buffer, "Reg[0x%02X] = 0x%04X\r\n", addr, regData);
-        UART_Transmit_Str(&huart1, (uint8_t*)buffer);
+        UART_Transmit_Str(&huart3, (uint8_t*)buffer);
         HAL_Delay(1); // 短暂延时确保SPI通信稳定
     }
     
-    UART_Transmit_Str(&huart1, (uint8_t*)"=== SPI Register Dump End ===\r\n\r\n");
+    UART_Transmit_Str(&huart3, (uint8_t*)"=== SPI Register Dump End ===\r\n\r\n");
 }
 
 /**
@@ -1392,6 +1628,7 @@ uint16_t Get_PSUMA_From_Register(void)
  */
 void Motor12_SetTargetPosition(int32_t target_pos)
 {
+		Motor12_EnablePositionControl();
     motor12_target_position = target_pos;
 }
 
@@ -1492,6 +1729,7 @@ void Motor12_ResetPosition(void)
  */
 void Motor34_SetTargetPosition(int32_t target_pos)
 {
+		Motor34_EnablePositionControl();
     motor34_target_position = target_pos;
 }
 
@@ -1592,6 +1830,7 @@ void Motor34_ResetPosition(void)
  */
 void Motor56_SetTargetPosition(int32_t target_pos)
 {
+		Motor56_EnablePositionControl();
     motor56_target_position = target_pos;
 }
 
@@ -1692,6 +1931,7 @@ void Motor56_ResetPosition(void)
  */
 void Motor78_SetTargetPosition(int32_t target_pos)
 {
+		Motor78_EnablePositionControl();
     motor78_target_position = target_pos;
 }
 
@@ -1784,32 +2024,625 @@ void Motor78_ResetPosition(void)
     motor78_current_position = 0;
     motor78_target_position = 0;
 }
+// ==================== Motor9A API Functions ====================
 
 /**
- * @brief 步进电机34方向控制函数
- * @param pos 步数 (0-4095, 12位)
- * @param direction 方向 (0=正方向, 1=负方向)
+ * @brief 设置步进电机9A的目标位置
+ * @param target_pos 目标位置
  */
-void set_34_with_direction(uint16_t pos, uint8_t direction)
+void Motor9A_SetTargetPosition(int32_t target_pos)
 {
-    uint16_t register_value;
-    
-    // 限制步数在12位范围内
-    pos = pos & 0x0FFF;
-    
-    // 构造寄存器值：保持0xcfff的高4位，设置D12位方向，设置步数
-    if (direction == 0) {
-        // 正方向：D12位=0
-        register_value = (0xcfff & 0xF000) | pos;
-    } else {
-        // 负方向：D12位=1
-        register_value = (0xcfff & 0xF000) | 0x1000 | pos;
+    Motor9A_EnablePositionControl();
+    motor9a_target_position = target_pos;
+}
+
+/**
+ * @brief 获取步进电机9A的当前位置
+ * @return 当前位置
+ */
+int32_t Motor9A_GetCurrentPosition(void)
+{
+    return motor9a_current_position;
+}
+
+/**
+ * @brief 获取步进电机9A的目标位置
+ * @return 目标位置
+ */
+int32_t Motor9A_GetTargetPosition(void)
+{
+    return motor9a_target_position;
+}
+
+/**
+ * @brief 设置步进电机9A的当前位置
+ * @param current_pos 当前位置
+ */
+void Motor9A_SetCurrentPosition(int32_t current_pos)
+{
+    motor9a_current_position = current_pos;
+}
+
+/**
+ * @brief 启用步进电机9A的位置控制
+ */
+void Motor9A_EnablePositionControl(void)
+{
+    motor9a_position_control_enabled = true;
+}
+
+/**
+ * @brief 禁用步进电机9A的位置控制
+ */
+void Motor9A_DisablePositionControl(void)
+{
+    motor9a_position_control_enabled = false;
+}
+
+/**
+ * @brief 检查步进电机9A是否已到达目标位置
+ * @return true 如果已到达目标位置，false 否则
+ */
+bool Motor9A_IsAtTargetPosition(void)
+{
+    return motor9a_current_position == motor9a_target_position;
+}
+
+/**
+ * @brief 获取步进电机9A的位置误差
+ * @return 位置误差（目标位置 - 当前位置）
+ */
+int32_t Motor9A_GetPositionError(void)
+{
+    return motor9a_target_position - motor9a_current_position;
+}
+
+/**
+ * @brief 设置步进电机9A每个周期的最大步数
+ * @param max_steps 最大步数
+ */
+void Motor9A_SetMaxStepsPerCycle(uint16_t max_steps)
+{
+    if (max_steps > 0 && max_steps <= 0x0FFF) {
+        motor9a_max_steps_per_cycle = max_steps;
+    }
+}
+
+/**
+ * @brief 获取步进电机9A每个周期的最大步数
+ * @return 最大步数
+ */
+uint16_t Motor9A_GetMaxStepsPerCycle(void)
+{
+    return motor9a_max_steps_per_cycle;
+}
+
+/**
+ * @brief 重置步进电机9A的位置
+ */
+void Motor9A_ResetPosition(void)
+{
+    motor9a_current_position = 0;
+    motor9a_target_position = 0;
+}
+
+// ==================== Motor Reset Functions ====================
+
+/**
+ * @brief 电机复位最大位置值
+ */
+#define MOTOR_RESET_MAX_POSITION 0x0FFFFFFF
+
+/**
+ * @brief 电机复位超时时间（毫秒）
+ */
+#define MOTOR_RESET_TIMEOUT_MS 10000
+
+// 电机复位状态变量
+static MotorResetState_t zoom3_reset_state = MOTOR_RESET_IDLE;
+static uint32_t zoom3_reset_start_time = 0;
+static GPIO_PinState zoom3_last_co_state = GPIO_PIN_RESET;
+static MotorResetState_t focus_reset_state = MOTOR_RESET_IDLE;
+static uint32_t focus_reset_start_time = 0;
+static GPIO_PinState focus_last_co_state = GPIO_PIN_RESET;
+static MotorResetState_t zoom2_reset_state = MOTOR_RESET_IDLE;
+static uint32_t zoom2_reset_start_time = 0;
+static GPIO_PinState zoom2_last_co_state = GPIO_PIN_RESET;
+static MotorResetState_t zoom1_reset_state = MOTOR_RESET_IDLE;
+static uint32_t zoom1_reset_start_time = 0;
+static GPIO_PinState zoom1_last_co_state = GPIO_PIN_RESET;
+static MotorResetState_t iris_reset_state = MOTOR_RESET_IDLE;
+static uint32_t iris_reset_start_time = 0;
+static GPIO_PinState iris_last_co_state = GPIO_PIN_RESET;
+
+/**
+ * @brief 启动ZOOM3电机复位流程（非阻塞）
+ * @return 0: 成功启动, -1: 已在复位中
+ */
+int Motor_ZOOM3_Reset_Start(void)
+{
+    if (zoom3_reset_state != MOTOR_RESET_IDLE && zoom3_reset_state != MOTOR_RESET_COMPLETED && zoom3_reset_state != MOTOR_RESET_TIMEOUT)
+    {
+        return -1; // 已在复位中
     }
     
-    Spi_Write(0x27, 0x0001); // 选择256分频  相位矫正=0 设置DT2延时
-    Spi_Write(0x28, 0xd8d8); // 设置最大占空比为 90%
-    Spi_Write(0x29, register_value); // 设置LED输出 电机输出使能/关断 启动/刹车 电流方向(D12) 步数(D11-D0)
-    Spi_Write(0x2a, INTCTCD); // 设置步进周期
-    Spi_Write(0x2b, 0x9e5e); // 设置TESTEN2 FZTEST  过流保护检测时间OCP_dly  PWMRES PWMMODE
-    VD_FZ();
+    LOG_Print(LOG_LEVEL_INFO,"Starting ZOOM3 motor reset process...\r\n");
+    
+    // 初始化CO信号状态
+    zoom3_last_co_state = HAL_GPIO_ReadPin(ZOOM3_PI_CO_GPIO_Port, ZOOM3_PI_CO_Pin);
+    
+    // 步骤1: 设置目标位置为最大值
+    if(zoom3_last_co_state==GPIO_PIN_RESET){
+        Motor34_SetTargetPosition(MOTOR_RESET_MAX_POSITION);
+    }
+    else{
+        Motor34_SetTargetPosition(-MOTOR_RESET_MAX_POSITION);
+    }
+    Motor34_EnablePositionControl();
+    
+    LOG_Print(LOG_LEVEL_INFO,"ZOOM3 target position set to maximum: %d\r\n", MOTOR_RESET_MAX_POSITION);
+    
+    
+    // 设置状态和开始时间
+    zoom3_reset_state = MOTOR_RESET_MOVING;
+    zoom3_reset_start_time = HAL_GetTick();
+    
+    return 0;
+}
+
+/**
+ * @brief 检查ZOOM3电机复位状态（非阻塞）
+ * 需要在主循环中定期调用
+ * @return MOTOR_RESET_IDLE: 空闲, MOTOR_RESET_MOVING: 运动中, 
+ *         MOTOR_RESET_COMPLETED: 完成, MOTOR_RESET_TIMEOUT: 超时
+ */
+MotorResetState_t Motor_ZOOM3_Reset_Process(void)
+{
+    if (zoom3_reset_state == MOTOR_RESET_MOVING)
+    {
+        // 检查超时
+        if ((HAL_GetTick() - zoom3_reset_start_time) > MOTOR_RESET_TIMEOUT_MS)
+        {
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM3 motor reset timeout!\r\n");
+            zoom3_reset_state = MOTOR_RESET_TIMEOUT;
+            return zoom3_reset_state;
+        }
+        
+        // 检查CO信号是否发生变化（电平变化到位信号）
+        GPIO_PinState current_co_state = HAL_GPIO_ReadPin(ZOOM3_PI_CO_GPIO_Port, ZOOM3_PI_CO_Pin);
+        if (current_co_state != zoom3_last_co_state)
+        {
+            // 步骤3: 检测到电平变化，将当前位置更新为0
+            Motor34_SetCurrentPosition(0*8);
+            Motor34_SetTargetPosition(0*8);
+            
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM3 motor reset completed successfully (CO signal changed from %s to %s)\r\n",
+                     zoom3_last_co_state == GPIO_PIN_SET ? "HIGH" : "LOW",
+                     current_co_state == GPIO_PIN_SET ? "HIGH" : "LOW");
+            zoom3_reset_state = MOTOR_RESET_COMPLETED;
+        }
+        zoom3_last_co_state = current_co_state;
+    }
+    
+    return zoom3_reset_state;
+}
+
+/**
+ * @brief 获取ZOOM3电机复位状态
+ * @return 当前复位状态
+ */
+MotorResetState_t Motor_ZOOM3_Reset_GetState(void)
+{
+    return zoom3_reset_state;
+}
+
+/**
+ * @brief 重置ZOOM3电机复位状态为空闲
+ */
+void Motor_ZOOM3_Reset_Clear(void)
+{
+		Motor34_SetCurrentPosition(0*8);
+		Motor34_SetTargetPosition(0*8);
+    zoom3_reset_state = MOTOR_RESET_IDLE;
+		Motor34_PrintPositions();
+
+}
+
+/**
+ * @brief 启动FOCUS电机复位流程（非阻塞）
+ * @return 0: 成功启动, -1: 已在复位中
+ */
+int Motor_FOCUS_Reset_Start(void)
+{
+    if (focus_reset_state != MOTOR_RESET_IDLE && focus_reset_state != MOTOR_RESET_COMPLETED && focus_reset_state != MOTOR_RESET_TIMEOUT)
+    {
+        return -1; // 已在复位中
+    }
+    
+    LOG_Print(LOG_LEVEL_INFO,"Starting FOCUS motor reset process...\r\n");
+    
+    // 初始化CO信号状态
+    focus_last_co_state = HAL_GPIO_ReadPin(FOCUS_PI_CO_GPIO_Port, FOCUS_PI_CO_Pin);
+    
+    // 步骤1: 根据初始CO信号状态设置目标位置
+    if(focus_last_co_state==GPIO_PIN_RESET){
+        Motor9A_SetTargetPosition(-MOTOR_RESET_MAX_POSITION);
+    }
+    else{
+        Motor9A_SetTargetPosition(MOTOR_RESET_MAX_POSITION);
+    }
+    Motor9A_EnablePositionControl();
+    
+    LOG_Print(LOG_LEVEL_INFO,"FOCUS target position set to maximum: %d\r\n", MOTOR_RESET_MAX_POSITION);
+    
+    // 设置状态和开始时间
+    focus_reset_state = MOTOR_RESET_MOVING;
+    focus_reset_start_time = HAL_GetTick();
+    
+    return 0;
+}
+
+/**
+ * @brief 检查FOCUS电机复位状态（非阻塞）
+ * 需要在主循环中定期调用
+ * @return MOTOR_RESET_IDLE: 空闲, MOTOR_RESET_MOVING: 运动中, 
+ *         MOTOR_RESET_COMPLETED: 完成, MOTOR_RESET_TIMEOUT: 超时
+ */
+MotorResetState_t Motor_FOCUS_Reset_Process(void)
+{
+    if (focus_reset_state == MOTOR_RESET_MOVING)
+    {
+        // 检查超时
+        if ((HAL_GetTick() - focus_reset_start_time) > MOTOR_RESET_TIMEOUT_MS)
+        {
+            LOG_Print(LOG_LEVEL_INFO,"FOCUS motor reset timeout!\r\n");
+            focus_reset_state = MOTOR_RESET_TIMEOUT;
+            return focus_reset_state;
+        }
+        
+        // 检查CO信号是否发生变化（电平变化到位信号）
+        GPIO_PinState current_co_state = HAL_GPIO_ReadPin(FOCUS_PI_CO_GPIO_Port, FOCUS_PI_CO_Pin);
+        if (current_co_state != focus_last_co_state)
+        {
+            // 步骤3: 检测到电平变化，将当前位置更新为0
+            Motor9A_SetCurrentPosition(0*8);
+            Motor9A_SetTargetPosition(0*8);
+            
+            LOG_Print(LOG_LEVEL_INFO,"FOCUS motor reset completed successfully (CO signal changed from %s to %s)\r\n",
+                     focus_last_co_state == GPIO_PIN_SET ? "HIGH" : "LOW",
+                     current_co_state == GPIO_PIN_SET ? "HIGH" : "LOW");
+            focus_reset_state = MOTOR_RESET_COMPLETED;
+        }
+        focus_last_co_state = current_co_state;
+    }
+    
+    return focus_reset_state;
+}
+
+/**
+ * @brief 获取FOCUS电机复位状态
+ * @return 当前复位状态
+ */
+MotorResetState_t Motor_FOCUS_Reset_GetState(void)
+{
+    return focus_reset_state;
+}
+
+/**
+ * @brief 重置FOCUS电机复位状态为空闲
+ */
+void Motor_FOCUS_Reset_Clear(void)
+{
+		Motor9A_SetCurrentPosition(0*8);
+		Motor9A_SetTargetPosition(0*8);
+    focus_reset_state = MOTOR_RESET_IDLE;
+}
+
+/**
+ * @brief 启动ZOOM2电机复位流程（非阻塞）
+ * @return 0: 成功启动, -1: 已在复位中
+ */
+int Motor_ZOOM2_Reset_Start(void)
+{
+    if (zoom2_reset_state != MOTOR_RESET_IDLE && zoom2_reset_state != MOTOR_RESET_COMPLETED && zoom2_reset_state != MOTOR_RESET_TIMEOUT)
+    {
+        return -1; // 已在复位中
+    }
+    
+    LOG_Print(LOG_LEVEL_INFO,"Starting ZOOM2 motor reset process...\r\n");
+    
+    // 初始化CO信号状态
+    zoom2_last_co_state = HAL_GPIO_ReadPin(ZOOM2_PI_CO_GPIO_Port, ZOOM2_PI_CO_Pin);
+    
+    // 步骤1: 根据初始CO信号状态设置目标位置
+    if(zoom2_last_co_state==GPIO_PIN_RESET){
+        Motor78_SetTargetPosition(MOTOR_RESET_MAX_POSITION);
+    }
+    else{
+        Motor78_SetTargetPosition(-MOTOR_RESET_MAX_POSITION);
+    }
+    Motor78_EnablePositionControl();
+    
+    LOG_Print(LOG_LEVEL_INFO,"ZOOM2 target position set to maximum: %d\r\n", MOTOR_RESET_MAX_POSITION);
+    
+    // 设置状态和开始时间
+    zoom2_reset_state = MOTOR_RESET_MOVING;
+    zoom2_reset_start_time = HAL_GetTick();
+    
+    return 0;
+}
+
+/**
+ * @brief 检查ZOOM2电机复位状态（非阻塞）
+ * 需要在主循环中定期调用
+ * @return MOTOR_RESET_IDLE: 空闲, MOTOR_RESET_MOVING: 运动中, 
+ *         MOTOR_RESET_COMPLETED: 完成, MOTOR_RESET_TIMEOUT: 超时
+ */
+MotorResetState_t Motor_ZOOM2_Reset_Process(void)
+{
+    if (zoom2_reset_state == MOTOR_RESET_MOVING)
+    {
+        // 检查超时
+        if ((HAL_GetTick() - zoom2_reset_start_time) > MOTOR_RESET_TIMEOUT_MS)
+        {
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM2 motor reset timeout!\r\n");
+            zoom2_reset_state = MOTOR_RESET_TIMEOUT;
+            return zoom2_reset_state;
+        }
+        
+        // 检查CO信号是否发生变化（到位信号）
+        GPIO_PinState current_co_state = HAL_GPIO_ReadPin(ZOOM2_PI_CO_GPIO_Port, ZOOM2_PI_CO_Pin);
+        if (current_co_state != zoom2_last_co_state)
+        {
+            // 步骤3: 检测到CO信号变化，将当前位置更新为0
+            Motor78_SetCurrentPosition(0*8);
+            Motor78_SetTargetPosition(0*8);
+            
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM2 motor reset completed successfully - CO signal changed\r\n");
+            zoom2_reset_state = MOTOR_RESET_COMPLETED;
+        }
+        zoom2_last_co_state = current_co_state;
+    }
+    
+    return zoom2_reset_state;
+}
+
+/**
+ * @brief 获取ZOOM2电机复位状态
+ * @return 当前复位状态
+ */
+MotorResetState_t Motor_ZOOM2_Reset_GetState(void)
+{
+    return zoom2_reset_state;
+}
+
+/**
+ * @brief 重置ZOOM2电机复位状态为空闲
+ */
+void Motor_ZOOM2_Reset_Clear(void)
+{
+		Motor78_SetCurrentPosition(0*8);
+		Motor78_SetTargetPosition(0*8);
+    zoom2_reset_state = MOTOR_RESET_IDLE;
+}
+
+/**
+ * @brief 启动ZOOM1电机复位流程（非阻塞）
+ * @return 0: 成功启动, -1: 已在复位中
+ */
+int Motor_ZOOM1_Reset_Start(void)
+{
+    if (zoom1_reset_state != MOTOR_RESET_IDLE && zoom1_reset_state != MOTOR_RESET_COMPLETED && zoom1_reset_state != MOTOR_RESET_TIMEOUT)
+    {
+        return -1; // 已在复位中
+    }
+    
+    LOG_Print(LOG_LEVEL_INFO,"Starting ZOOM1 motor reset process...\r\n");
+    
+    // 初始化CO信号状态
+    zoom1_last_co_state = HAL_GPIO_ReadPin(ZOOM1_PI_CO_GPIO_Port, ZOOM1_PI_CO_Pin);
+    
+    // 步骤1: 根据初始CO信号状态设置目标位置
+    if(zoom1_last_co_state==GPIO_PIN_RESET){
+        Motor12_SetTargetPosition(MOTOR_RESET_MAX_POSITION);
+    }
+    else{
+        Motor12_SetTargetPosition(-MOTOR_RESET_MAX_POSITION);
+    }
+    Motor12_EnablePositionControl();
+    
+    LOG_Print(LOG_LEVEL_INFO,"ZOOM1 target position set to maximum: %d\r\n", MOTOR_RESET_MAX_POSITION);
+    
+    // 设置状态和开始时间
+    zoom1_reset_state = MOTOR_RESET_MOVING;
+    zoom1_reset_start_time = HAL_GetTick();
+    
+    return 0;
+}
+
+/**
+ * @brief 检查ZOOM1电机复位状态（非阻塞）
+ * 需要在主循环中定期调用
+ * @return MOTOR_RESET_IDLE: 空闲, MOTOR_RESET_MOVING: 运动中, 
+ *         MOTOR_RESET_COMPLETED: 完成, MOTOR_RESET_TIMEOUT: 超时
+ */
+MotorResetState_t Motor_ZOOM1_Reset_Process(void)
+{
+    if (zoom1_reset_state == MOTOR_RESET_MOVING)
+    {
+        // 检查超时
+        if ((HAL_GetTick() - zoom1_reset_start_time) > MOTOR_RESET_TIMEOUT_MS)
+        {
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM1 motor reset timeout!\r\n");
+            zoom1_reset_state = MOTOR_RESET_TIMEOUT;
+            return zoom1_reset_state;
+        }
+        
+        // 检查CO信号是否发生变化（到位信号）
+        GPIO_PinState current_co_state = HAL_GPIO_ReadPin(ZOOM1_PI_CO_GPIO_Port, ZOOM1_PI_CO_Pin);
+        if (current_co_state != zoom1_last_co_state)
+        {
+            // 步骤3: 检测到CO信号变化，将当前位置更新为0
+            Motor12_SetCurrentPosition(0*8);
+            Motor12_SetTargetPosition(0*8);
+            
+            LOG_Print(LOG_LEVEL_INFO,"ZOOM1 motor reset completed successfully - CO signal changed\r\n");
+            zoom1_reset_state = MOTOR_RESET_COMPLETED;
+        }
+        zoom1_last_co_state = current_co_state;
+    }
+    
+    return zoom1_reset_state;
+}
+
+/**
+ * @brief 获取ZOOM1电机复位状态
+ * @return 当前复位状态
+ */
+MotorResetState_t Motor_ZOOM1_Reset_GetState(void)
+{
+    return zoom1_reset_state;
+}
+
+/**
+ * @brief 重置ZOOM1电机复位状态为空闲
+ */
+void Motor_ZOOM1_Reset_Clear(void)
+{
+		Motor12_SetCurrentPosition(0*8);
+		Motor12_SetTargetPosition(0*8);
+    zoom1_reset_state = MOTOR_RESET_IDLE;
+}
+
+/**
+ * @brief 启动IRIS电机复位流程（非阻塞）
+ * @return 0: 成功启动, -1: 已在复位中
+ */
+int Motor_IRIS_Reset_Start(void)
+{
+    if (iris_reset_state != MOTOR_RESET_IDLE && iris_reset_state != MOTOR_RESET_COMPLETED && iris_reset_state != MOTOR_RESET_TIMEOUT)
+    {
+        return -1; // 已在复位中
+    }
+    
+    LOG_Print(LOG_LEVEL_INFO,"Starting IRIS motor reset process...\r\n");
+    
+    // 初始化CO信号状态
+    iris_last_co_state = HAL_GPIO_ReadPin(IRIS_PI_CO_GPIO_Port, IRIS_PI_CO_Pin);
+    
+    // 步骤1: 根据初始CO信号状态设置目标位置
+    if(iris_last_co_state==GPIO_PIN_RESET){
+        Motor56_SetTargetPosition(-MOTOR_RESET_MAX_POSITION);
+    }
+    else{
+        Motor56_SetTargetPosition(MOTOR_RESET_MAX_POSITION);
+    }
+    Motor56_EnablePositionControl();
+    
+    LOG_Print(LOG_LEVEL_INFO,"IRIS target position set to maximum: %d\r\n", MOTOR_RESET_MAX_POSITION);
+    
+    // 设置状态和开始时间
+    iris_reset_state = MOTOR_RESET_MOVING;
+    iris_reset_start_time = HAL_GetTick();
+    
+    return 0;
+}
+
+/**
+ * @brief 检查IRIS电机复位状态（非阻塞）
+ * 需要在主循环中定期调用
+ * @return MOTOR_RESET_IDLE: 空闲, MOTOR_RESET_MOVING: 运动中, 
+ *         MOTOR_RESET_COMPLETED: 完成, MOTOR_RESET_TIMEOUT: 超时
+ */
+MotorResetState_t Motor_IRIS_Reset_Process(void)
+{
+    if (iris_reset_state == MOTOR_RESET_MOVING)
+    {
+        // 检查超时
+        if ((HAL_GetTick() - iris_reset_start_time) > MOTOR_RESET_TIMEOUT_MS)
+        {
+            LOG_Print(LOG_LEVEL_INFO,"IRIS motor reset timeout!\r\n");
+            iris_reset_state = MOTOR_RESET_TIMEOUT;
+            return iris_reset_state;
+        }
+        
+        // 检查CO信号是否发生变化（到位信号）
+        GPIO_PinState current_co_state = HAL_GPIO_ReadPin(IRIS_PI_CO_GPIO_Port, IRIS_PI_CO_Pin);
+        if (current_co_state != iris_last_co_state)
+        {
+            // 步骤3: 检测到CO信号变化，将当前位置更新为0
+            Motor56_SetCurrentPosition(0);
+            Motor56_SetTargetPosition(0);
+            
+            LOG_Print(LOG_LEVEL_INFO,"IRIS motor reset completed successfully - CO signal changed\r\n");
+            iris_reset_state = MOTOR_RESET_COMPLETED;
+        }
+        iris_last_co_state = current_co_state;
+    }
+    
+    return iris_reset_state;
+}
+
+/**
+ * @brief 获取IRIS电机复位状态
+ * @return 当前复位状态
+ */
+MotorResetState_t Motor_IRIS_Reset_GetState(void)
+{
+    return iris_reset_state;
+}
+
+/**
+ * @brief 重置IRIS电机复位状态为空闲
+ */
+void Motor_IRIS_Reset_Clear(void)
+{
+		Motor56_SetCurrentPosition(0);
+		Motor56_SetTargetPosition(0);
+    iris_reset_state = MOTOR_RESET_IDLE;
+}
+
+/**
+ * @brief 检查单个电机的CO信号状态
+ * @param motor_name 电机名称
+ * @param gpio_port GPIO端口
+ * @param gpio_pin GPIO引脚
+ * @return true表示CO信号为高电平（到位），false表示低电平（未到位）
+ */
+bool Motor_CheckCOStatus(const char* motor_name, GPIO_TypeDef* gpio_port, uint16_t gpio_pin)
+{
+    GPIO_PinState pin_state = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
+    bool is_high = (pin_state == GPIO_PIN_SET);
+    
+    LOG_Print(LOG_LEVEL_INFO, "%s CO信号状态: %s\r\n", motor_name, is_high ? "高电平（到位）" : "低电平（未到位）");
+    return is_high;
+}
+
+/**
+ * @brief 检查所有电机的CO信号状态
+ * @return true表示所有CO信号都为高电平（全部到位），false表示至少有一个未到位
+ */
+void Motors_CheckAllCOStatus(void)
+{
+    //LOG_Print(LOG_LEVEL_INFO, "=== 检查所有电机CO信号状态 ===\r\n");
+    
+    bool zoom1_status = Motor_CheckCOStatus("ZOOM1", ZOOM1_PI_CO_GPIO_Port, ZOOM1_PI_CO_Pin);
+    bool zoom3_status = Motor_CheckCOStatus("ZOOM3", ZOOM3_PI_CO_GPIO_Port, ZOOM3_PI_CO_Pin);
+    bool iris_status = Motor_CheckCOStatus("IRIS", IRIS_PI_CO_GPIO_Port, IRIS_PI_CO_Pin);
+    bool zoom2_status = Motor_CheckCOStatus("ZOOM2", ZOOM2_PI_CO_GPIO_Port, ZOOM2_PI_CO_Pin);
+    bool focus_status = Motor_CheckCOStatus("FOCUS", FOCUS_PI_CO_GPIO_Port, FOCUS_PI_CO_Pin);
+    
+//    bool all_high = zoom1_status && zoom3_status && iris_status && zoom2_status && focus_status;
+    
+ //   LOG_Print(LOG_LEVEL_INFO, "\r\n=== CO信号检查结果汇总 ===\r\n");
+ //   LOG_Print(LOG_LEVEL_INFO, "ZOOM1: %s\r\n", zoom1_status ? "到位" : "未到位");
+//    LOG_Print(LOG_LEVEL_INFO, "ZOOM3: %s\r\n", zoom3_status ? "到位" : "未到位");
+//    LOG_Print(LOG_LEVEL_INFO, "IRIS:  %s\r\n", iris_status ? "到位" : "未到位");
+//    LOG_Print(LOG_LEVEL_INFO, "ZOOM2: %s\r\n", zoom2_status ? "到位" : "未到位");
+//    LOG_Print(LOG_LEVEL_INFO, "FOCUS: %s\r\n", focus_status ? "到位" : "未到位");
+//    LOG_Print(LOG_LEVEL_INFO, "\r\n所有CO信号状态: %s\r\n", 
+//              all_high ? "全部为高电平（全部到位）" : "存在低电平信号（部分未到位）");
+//    LOG_Print(LOG_LEVEL_INFO, "========================\r\n");
+    
+ //   return all_high;
 }

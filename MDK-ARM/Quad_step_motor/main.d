@@ -32,12 +32,12 @@ quad_step_motor\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
 quad_step_motor\main.o: ..\User\software_Time.h
 quad_step_motor\main.o: ../Core/Inc/main.h
 quad_step_motor\main.o: ..\User\user_function.h
-quad_step_motor\main.o: ..\User\user_function.h
+quad_step_motor\main.o: ..\User\control.h
+quad_step_motor\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 quad_step_motor\main.o: ..\User\user_init.h
 quad_step_motor\main.o: ..\User\UART\uart.h
 quad_step_motor\main.o: ..\User\LOG\user_log.h
 quad_step_motor\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 quad_step_motor\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-quad_step_motor\main.o: ..\User\control.h
-quad_step_motor\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+quad_step_motor\main.o: ..\User\pelco_d_protocol.h

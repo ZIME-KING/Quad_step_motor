@@ -25,10 +25,10 @@ void delay_us(uint32_t i){
 
 
  //__attribute__机制在main之前运行一次 set_time
- static __attribute__((constructor)) void SetTime();
+static __attribute__((constructor)) void SetTime(void);
 
 //设定间隔时间
-void SetTime(){
+void SetTime(void){
 	Task_1.TimeInter     = 1;//设定间隔时间
 	Task_5.TimeInter     = 5;
 	Task_20.TimeInter    = 20;

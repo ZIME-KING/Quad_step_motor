@@ -32,13 +32,13 @@ quad_step_motor\stm32f1xx_it.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ha
 quad_step_motor\stm32f1xx_it.o: ..\User\software_Time.h
 quad_step_motor\stm32f1xx_it.o: ../Core/Inc/main.h
 quad_step_motor\stm32f1xx_it.o: ..\User\user_function.h
-quad_step_motor\stm32f1xx_it.o: ..\User\user_function.h
+quad_step_motor\stm32f1xx_it.o: ..\User\control.h
+quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 quad_step_motor\stm32f1xx_it.o: ..\User\user_init.h
 quad_step_motor\stm32f1xx_it.o: ..\User\UART\uart.h
 quad_step_motor\stm32f1xx_it.o: ..\User\LOG\user_log.h
 quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-quad_step_motor\stm32f1xx_it.o: ..\User\control.h
-quad_step_motor\stm32f1xx_it.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+quad_step_motor\stm32f1xx_it.o: ..\User\pelco_d_protocol.h
 quad_step_motor\stm32f1xx_it.o: ../Core/Inc/stm32f1xx_it.h

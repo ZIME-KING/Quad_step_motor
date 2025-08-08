@@ -40,7 +40,7 @@ extern "C" {
 #include "user_log.h"
 #include "stdio.h"
 #include "control.h"
-
+#include "pelco_d_protocol.h"
 
 extern SPI_HandleTypeDef hspi2;
 
@@ -94,12 +94,12 @@ void Error_Handler(void);
 #define MS_RSTB_GPIO_Port GPIOA
 #define ZOOM3_PI_CO_Pin GPIO_PIN_12
 #define ZOOM3_PI_CO_GPIO_Port GPIOA
-#define FOCUS_PI_CO_Pin GPIO_PIN_15
-#define FOCUS_PI_CO_GPIO_Port GPIOA
-#define ZOOM2_PI_CO_Pin GPIO_PIN_3
+#define ZOOM1_PI_CO_Pin GPIO_PIN_15
+#define ZOOM1_PI_CO_GPIO_Port GPIOA
+#define FOCUS_PI_CO_Pin GPIO_PIN_3
+#define FOCUS_PI_CO_GPIO_Port GPIOB
+#define ZOOM2_PI_CO_Pin GPIO_PIN_4
 #define ZOOM2_PI_CO_GPIO_Port GPIOB
-#define ZOOM1_PI_CO_Pin GPIO_PIN_4
-#define ZOOM1_PI_CO_GPIO_Port GPIOB
 #define IRIS_PI_CO_Pin GPIO_PIN_5
 #define IRIS_PI_CO_GPIO_Port GPIOB
 #define MS_PLS2_Pin GPIO_PIN_6

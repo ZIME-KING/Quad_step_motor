@@ -154,11 +154,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 //    	status_uart2=HAL_UART_Receive_IT(&huart2,uart_2_buffer,1);		// 重新使能串口2接收中断
 //        Uart_2_Receive_Interrupt();
 //    }
-//    if(huart->Instance== USART3) {
-//    	USART3_count++;
-//    	status_uart3=HAL_UART_Receive_IT(&huart3,uart_3_buffer,1);		// 重新使能串口3接收中断
-//        Uart_3_Receive_Interrupt();
-//    }
+    if(huart->Instance== USART3) {
+    	USART3_count++;
+    	status_uart3=HAL_UART_Receive_IT(&huart3,uart_3_buffer,1);		// 重新使能串口3接收中断
+        Uart_3_Receive_Interrupt();
+    }
     if(huart->Instance==USART1) {
     	USART1_count++;
     	status_uart1=HAL_UART_Receive_IT(&huart1,uart_1_buffer,1);		// 重新使能串口1接收中断
