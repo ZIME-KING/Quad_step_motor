@@ -56,6 +56,13 @@ uint16_t LED3 = 0x0000;
 uint16_t LED4 = 0x0000;
 
 
+#define ZOOM1_ZERO_POS  0
+#define ZOOM2_ZERO_POS  0
+#define ZOOM3_ZERO_POS  0
+#define FOUCE_ZERO_POS  0
+
+
+
 // 步进电机控制相关变量
 static bool stepper_running = false;
 static uint16_t target_steps_A = 0;
@@ -793,7 +800,7 @@ void VD_IS(void)
 }
 
 
-#define KEY_NO						0x00000000
+#define KEY_NO							0x00000000
 #define KEY_SW1_UP					0x00000001
 #define	KEY_SW1_DOWN				0x00000002
 #define	KEY_SW1_LEFT 				0x00000004
@@ -801,16 +808,16 @@ void VD_IS(void)
 #define KEY_SW1_ENTER				0x00000010
 #define KEY_SW2_UP 					0x00000020
 #define KEY_SW2_DOWN				0x00000040
-#define KEY_SW2_LEFT   			    0x00000080
-#define KEY_SW2_RIGHT  			    0x00000100
+#define KEY_SW2_LEFT				0x00000080
+#define KEY_SW2_RIGHT				0x00000100
 #define KEY_SW2_ENTER				0x00000200
 
-#define	KEY_SHORT_DOWN			    0x01000000
-#define KEY_SHORT_UP				0x02000000
-#define	KEY_LONG_DOWN				0x04000000
-#define	KEY_LONG_UP					0x08000000
-#define	KEY_CONTI_DOWN			    0x10000000
-#define KEY_LONG_DOWN_INIT	        0x20000000
+#define	KEY_SHORT_DOWN					0x01000000
+#define KEY_SHORT_UP						0x02000000
+#define	KEY_LONG_DOWN						0x04000000
+#define	KEY_LONG_UP							0x08000000
+#define	KEY_CONTI_DOWN					0x10000000
+#define KEY_LONG_DOWN_INIT			0x20000000
 #define KEY_LONG_UP_INIT		    0x40000000
 #define KEY_LONG_DOWN_2S		    0x80000000
 #define KEY_LONG_UP_2S			    0x00800000
@@ -2213,8 +2220,8 @@ MotorResetState_t Motor_ZOOM3_Reset_Process(void)
         if (current_co_state != zoom3_last_co_state)
         {
             // 步骤3: 检测到电平变化，将当前位置更新为0
-            Motor34_SetCurrentPosition(0*8);
-            Motor34_SetTargetPosition(0*8);
+            Motor34_SetCurrentPosition(ZOOM3_ZERO_POS*4);
+            Motor34_SetTargetPosition(ZOOM3_ZERO_POS*4);
             
             LOG_Print(LOG_LEVEL_INFO,"ZOOM3 motor reset completed successfully (CO signal changed from %s to %s)\r\n",
                      zoom3_last_co_state == GPIO_PIN_SET ? "HIGH" : "LOW",
@@ -2241,8 +2248,8 @@ MotorResetState_t Motor_ZOOM3_Reset_GetState(void)
  */
 void Motor_ZOOM3_Reset_Clear(void)
 {
-		Motor34_SetCurrentPosition(0*8);
-		Motor34_SetTargetPosition(0*8);
+		Motor34_SetCurrentPosition(ZOOM3_ZERO_POS*4);
+		Motor34_SetTargetPosition(ZOOM3_ZERO_POS*4);
     zoom3_reset_state = MOTOR_RESET_IDLE;
 		Motor34_PrintPositions();
 
@@ -2305,8 +2312,8 @@ MotorResetState_t Motor_FOCUS_Reset_Process(void)
         if (current_co_state != focus_last_co_state)
         {
             // 步骤3: 检测到电平变化，将当前位置更新为0
-            Motor9A_SetCurrentPosition(0*8);
-            Motor9A_SetTargetPosition(0*8);
+            Motor9A_SetCurrentPosition(FOUCE_ZERO_POS*4);
+            Motor9A_SetTargetPosition(FOUCE_ZERO_POS*4);
             
             LOG_Print(LOG_LEVEL_INFO,"FOCUS motor reset completed successfully (CO signal changed from %s to %s)\r\n",
                      focus_last_co_state == GPIO_PIN_SET ? "HIGH" : "LOW",
@@ -2333,8 +2340,8 @@ MotorResetState_t Motor_FOCUS_Reset_GetState(void)
  */
 void Motor_FOCUS_Reset_Clear(void)
 {
-		Motor9A_SetCurrentPosition(0*8);
-		Motor9A_SetTargetPosition(0*8);
+		Motor9A_SetCurrentPosition(FOUCE_ZERO_POS*4);
+		Motor9A_SetTargetPosition(FOUCE_ZERO_POS*4);
     focus_reset_state = MOTOR_RESET_IDLE;
 }
 
@@ -2395,8 +2402,8 @@ MotorResetState_t Motor_ZOOM2_Reset_Process(void)
         if (current_co_state != zoom2_last_co_state)
         {
             // 步骤3: 检测到CO信号变化，将当前位置更新为0
-            Motor78_SetCurrentPosition(0*8);
-            Motor78_SetTargetPosition(0*8);
+            Motor78_SetCurrentPosition(ZOOM2_ZERO_POS*4);
+            Motor78_SetTargetPosition(ZOOM2_ZERO_POS*4);
             
             LOG_Print(LOG_LEVEL_INFO,"ZOOM2 motor reset completed successfully - CO signal changed\r\n");
             zoom2_reset_state = MOTOR_RESET_COMPLETED;
@@ -2421,8 +2428,8 @@ MotorResetState_t Motor_ZOOM2_Reset_GetState(void)
  */
 void Motor_ZOOM2_Reset_Clear(void)
 {
-		Motor78_SetCurrentPosition(0*8);
-		Motor78_SetTargetPosition(0*8);
+		Motor78_SetCurrentPosition(ZOOM2_ZERO_POS*4);
+		Motor78_SetTargetPosition(ZOOM2_ZERO_POS*4);
     zoom2_reset_state = MOTOR_RESET_IDLE;
 }
 
@@ -2483,8 +2490,8 @@ MotorResetState_t Motor_ZOOM1_Reset_Process(void)
         if (current_co_state != zoom1_last_co_state)
         {
             // 步骤3: 检测到CO信号变化，将当前位置更新为0
-            Motor12_SetCurrentPosition(0*8);
-            Motor12_SetTargetPosition(0*8);
+            Motor12_SetCurrentPosition(ZOOM1_ZERO_POS*8);
+            Motor12_SetTargetPosition(ZOOM1_ZERO_POS*8);
             
             LOG_Print(LOG_LEVEL_INFO,"ZOOM1 motor reset completed successfully - CO signal changed\r\n");
             zoom1_reset_state = MOTOR_RESET_COMPLETED;
@@ -2509,8 +2516,8 @@ MotorResetState_t Motor_ZOOM1_Reset_GetState(void)
  */
 void Motor_ZOOM1_Reset_Clear(void)
 {
-		Motor12_SetCurrentPosition(0*8);
-		Motor12_SetTargetPosition(0*8);
+		Motor12_SetCurrentPosition(ZOOM1_ZERO_POS*8);
+		Motor12_SetTargetPosition(ZOOM1_ZERO_POS*8);
     zoom1_reset_state = MOTOR_RESET_IDLE;
 }
 

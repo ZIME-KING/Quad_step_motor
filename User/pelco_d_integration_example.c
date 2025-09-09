@@ -13,29 +13,74 @@
 
 
 //Z1-Step	Z2-Step	Z3-Step
-int16_t x1_x16_cide[16][4]=
+const int16_t x1_x16_cide[16][4]=
 {
-{	755	,	227	,	216	,	100	}	,
-{	393	,	288	,	192	,	100	}	,
-{	108	,	247	,	173	,	100	}	,
-{	-108	,	160	,	50	,	100	}	,
-{	-310	,	-13	,	-96	,	100	}	,
-{	-485	,	-238	,	-265	,	100	}	,
-{	-596	,	-381	,	-408	,	100	}	,
-{	-664	,	-444	,	-516	,	100	}	,
-{	-710	,	-470	,	-601	,	100	}	,
-{	-740	,	-453	,	-662	,	100	}	,
-{	-759	,	-398	,	-703	,	100	}	,
-{	-771	,	-331	,	-730	,	100	}	,
-{	-780	,	-258	,	-751	,	100	}	,
-{	-787	,	-185	,	-768	,	100	}	,
-{	-793 	,	-108	,	-782	,	100	}	,
-{	-800 	,	0			,	-800	,	100	}	,
-
+{	731 	,	34 	    ,	491 	  ,	-77 		}	,
+{	183 	,	158 	  ,	316 	  ,	323 		}	,
+{	-115 	,	73 	    ,	70 	    ,	431 		}	,
+{	-319 	,	-86 	  ,	-161 	  ,	356 		}	,
+{	-534 	,	-447 	  ,	-470 	  ,	-5 			}	,
+{	-710 	,	-899 	  ,	-810 	  ,	-530 		}	,
+{	-820 	,	-1183 	,	-1093 	,	-951 		}	,
+{	-888 	,	-1309 	,	-1309 	,	-1267 	}	,
+{	-934 	,	-1362 	,	-1479 	,	-1528 	}	,
+{	-964 	,	-1327 	,	-1601 	,	-1729 	}	,
+{	-983 	,	-1217 	,	-1683 	,	-1878 	}	,
+{	-995 	,	-1084 	,	-1738 	,	-1990 	}	,
+{	-1004 	,	-938 	,	-1780 	,	-2089 	}	,
+{	-1011 	,	-791 	,	-1813 	,	-2179 	}	,
+{	-1017 	,	-638 	,	-1842 	,	-2272 	}	,
+{	-1021 	,	-519 	,	-1862 	,	-2344 	}	,
 
 };
 
+#define	POSX1	0
+#define	POSX2	548
+#define	POSX3	847
+#define	POSX4	1063
+#define	POSX5	1265
+#define	POSX6	1440
+#define	POSX7	1551
+#define	POSX8	1621
+#define	POSX9	1666
+#define	POSX10	1695
+#define	POSX11	1714
+#define	POSX12	1726
+#define	POSX13	1735
+#define	POSX14	1742
+#define	POSX15	1748
+#define	POSX16	1752
 
+uint16_t pos_code[16]={0 ,548 ,847 ,1063 ,1265 ,1440 ,1551 ,1621 ,1666 ,1695 ,1714 ,1726 ,1735 ,1742 ,1748 ,1752};
+
+
+ int32_t current_position = 0;  // 当前位置
+ int32_t target_position = 0;   // 目标位置
+
+void test_PositionControl(void)
+{
+    // 计算位置差
+    int32_t position_error = target_position - current_position;
+    if (position_error == 0) {
+				return; // 已到达目标位置
+    }
+    // 确定运动方向和步数
+    if (position_error > 0) {
+        // 正方向运动 - D12位=0表示正方向
+						Motor12_SetTargetPosition(test_x1_x16_code[current_position][0]*8);	//zoom1
+						Motor78_SetTargetPosition(test_x1_x16_code[current_position][1]*4);	//zoom2
+						Motor34_SetTargetPosition(test_x1_x16_code[current_position][2]*4); //zoom3
+						Motor9A_SetTargetPosition(test_x1_x16_code[current_position][3]*4);
+						current_position++;
+    } else {
+        // 负方向运动 - D12位=1表示负方向
+						Motor12_SetTargetPosition(test_x1_x16_code[current_position][0]*8);	//zoom1
+						Motor78_SetTargetPosition(test_x1_x16_code[current_position][1]*4);	//zoom2
+						Motor34_SetTargetPosition(test_x1_x16_code[current_position][2]*4); //zoom3
+						Motor9A_SetTargetPosition(test_x1_x16_code[current_position][3]*4);
+						current_position--;
+    }
+}
 
 
 
@@ -47,7 +92,7 @@ typedef struct {
     uint8_t lens_reset_status;      // 镜头复位状态
 } LensStatus_t;
 
-static LensStatus_t lens_status = {
+LensStatus_t lens_status = {
     .current_zoom_level = 1,
     .ircut_status = 0,
     .lens_reset_status = 0
@@ -57,7 +102,7 @@ static LensStatus_t lens_status = {
  * @brief 执行镜头复位操作
  * @return 0-成功, 其他-失败
  */
-static int PelcoD_ExecuteLensReset(void)
+int PelcoD_ExecuteLensReset(void)
 {
     // 启动所有电机的复位
     int result = 0;
@@ -89,7 +134,7 @@ static int PelcoD_ExecuteLensReset(void)
     
     if (result == 0) {
         lens_status.lens_reset_status = 1;
-        lens_status.current_zoom_level = 1; // 复位后回到1倍
+        lens_status.current_zoom_level = 2; // 复位后回到2倍
     }
     
     return result;
@@ -108,19 +153,13 @@ static int PelcoD_ExecuteZoomStep(uint8_t direction)
             lens_status.current_zoom_level++;
             // 这里应该调用实际的变倍控制函数
             // 例如: ZoomControl(lens_status.current_zoom_level);
-					
-						Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
-						Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*8);	//zoom2
-						Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*8); //zoom3
-				//		Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*8);
+						target_position=pos_code[lens_status.current_zoom_level-1];
             return 0;
         }
 				
 				else{
-						Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
-						Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*8);	//zoom2
-						Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*8); //zoom3
-				//		Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*8);
+						target_position=pos_code[lens_status.current_zoom_level-1];
+
 						return 0; // 
 				}
     } else {
@@ -129,18 +168,13 @@ static int PelcoD_ExecuteZoomStep(uint8_t direction)
             lens_status.current_zoom_level--;
             // 这里应该调用实际的变倍控制函数
             // 例如: ZoomControl(lens_status.current_zoom_level);
-					
-						Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
-						Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*8);	//zoom2
-						Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*8); //zoom3
-				//		Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*8);
+							target_position=pos_code[lens_status.current_zoom_level-1];
+
             return 0;
         }
 				else{
-						Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
-						Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*8);	//zoom2
-						Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*8); //zoom3
-				//		Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*8);
+							target_position=pos_code[lens_status.current_zoom_level-1];
+
 						return -1; // 已达到最小倍率
 				}
     }
@@ -155,10 +189,16 @@ static int PelcoD_ExecuteZoomSet(uint8_t zoom_level)
 {
     if (zoom_level >= PELCO_D_ZOOM_MIN && zoom_level <= PELCO_D_ZOOM_MAX) {
         lens_status.current_zoom_level = zoom_level;
-  				Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
-   				Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*8);	//zoom2
-					Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*8); //zoom3
-				//	Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*8);
+			
+			
+					target_position=pos_code[lens_status.current_zoom_level-1];
+
+//			
+//  				Motor12_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][0]*8);	//zoom1
+//   				Motor78_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][1]*4);	//zoom2
+//					Motor34_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][2]*4); //zoom3
+//				  Motor9A_SetTargetPosition(x1_x16_cide[lens_status.current_zoom_level-1][3]*4);
+				//target_position=pos_code[lens_status.current_zoom_level-1];
 				// 这里应该调用实际的变倍控制函数
         // 例如: ZoomControl(zoom_level);
         return 0;
@@ -178,37 +218,23 @@ static int PelcoD_ExecuteFocusControl(uint8_t direction, uint8_t step_size)
     // 根据方向和步长控制聚焦电机
     if (direction == PELCO_D_FOCUS_FAR) {
 				now_pos=Motor9A_GetCurrentPosition();
-				Motor9A_SetTargetPosition(now_pos+=(step_size*8));
-			
-			
+				Motor9A_SetTargetPosition(now_pos+=(step_size*4));
 //				now_pos=Motor12_GetCurrentPosition();
 //				Motor12_SetTargetPosition(now_pos+=(step_size*16));
-
 //				now_pos=Motor34_GetCurrentPosition();
 //				Motor34_SetTargetPosition(now_pos+=(step_size*16));			
-
 //				now_pos=Motor78_GetCurrentPosition();
 //				Motor78_SetTargetPosition(now_pos+=(step_size*10*8));		
-			
     } else if (direction == PELCO_D_FOCUS_NEAR) {
-			
-			
-			
 				now_pos=Motor9A_GetCurrentPosition();
-				Motor9A_SetTargetPosition(now_pos-=(step_size*8));
-			
+				Motor9A_SetTargetPosition(now_pos-=(step_size*4));
 //				now_pos=Motor12_GetCurrentPosition();
 //				Motor12_SetTargetPosition(now_pos-=(step_size*16));
-//			
 //				now_pos=Motor34_GetCurrentPosition();
 //				Motor34_SetTargetPosition(now_pos-=(step_size*16));
-		
 //				now_pos=Motor78_GetCurrentPosition();
 //				Motor78_SetTargetPosition(now_pos-=(step_size*10*8));		
-		
-		
 		}
-    
     return 0;
 }
 
@@ -222,25 +248,20 @@ static int PelcoD_ExecuteIrcutControl(uint8_t channel, uint8_t state)
 {
     if (channel == PELCO_D_IRCUT_CH0) {
         lens_status.ircut_status = state;
-        
         // 这里应该调用实际的IR-CUT控制函数
         if (state == PELCO_D_IRCUT_ON) {
 					HAL_GPIO_WritePin(IRCUT_1_GPIO_Port, IRCUT_1_Pin, GPIO_PIN_SET);
 					HAL_GPIO_WritePin(IRCUT_2_GPIO_Port, IRCUT_1_Pin, GPIO_PIN_SET);
-
 					// 开启IR-CUT
-            // 例如: HAL_GPIO_WritePin(IRCUT_GPIO_Port, IRCUT_Pin, GPIO_PIN_SET);
+          // 例如: HAL_GPIO_WritePin(IRCUT_GPIO_Port, IRCUT_Pin, GPIO_PIN_SET);
         } else {
 					HAL_GPIO_WritePin(IRCUT_1_GPIO_Port, IRCUT_1_Pin, GPIO_PIN_RESET);
 					HAL_GPIO_WritePin(IRCUT_2_GPIO_Port, IRCUT_1_Pin, GPIO_PIN_RESET);
-
 					// 关闭IR-CUT
-            // 例如: HAL_GPIO_WritePin(IRCUT_GPIO_Port, IRCUT_Pin, GPIO_PIN_RESET);
+          // 例如: HAL_GPIO_WritePin(IRCUT_GPIO_Port, IRCUT_Pin, GPIO_PIN_RESET);
         }
-        
         return 0;
     }
-    
     return -1; // 无效的通道号
 }
 
@@ -252,7 +273,6 @@ static uint8_t PelcoD_GetCurrentZoomLevel(void)
 {
     return lens_status.current_zoom_level;
 }
-
 /**
  * @brief 处理PelcoD命令并执行相应操作
  * @param cmd 解析后的命令
@@ -463,6 +483,8 @@ const LensStatus_t* PelcoD_GetLensStatus(void)
  */
 void PelcoD_1msTimerHandler(void)
 {
+	
+		//printf("");
     // 处理各个电机的复位状态
     if (lens_status.lens_reset_status) {
         // 检查所有电机复位是否完成
@@ -477,16 +499,24 @@ void PelcoD_1msTimerHandler(void)
             (zoom2_state == MOTOR_RESET_COMPLETED || zoom2_state == MOTOR_RESET_TIMEOUT) &&
             (zoom3_state == MOTOR_RESET_COMPLETED || zoom3_state == MOTOR_RESET_TIMEOUT) &&
             (focus_state == MOTOR_RESET_COMPLETED || focus_state == MOTOR_RESET_TIMEOUT) &&
-            (iris_state == MOTOR_RESET_COMPLETED || iris_state == MOTOR_RESET_TIMEOUT)) {
+            (iris_state == MOTOR_RESET_COMPLETED  || iris_state  == MOTOR_RESET_TIMEOUT)) {
             
             lens_status.lens_reset_status = 0;
-            
+        							
             // 清除所有电机复位状态
             Motor_ZOOM1_Reset_Clear();
             Motor_ZOOM2_Reset_Clear();
             Motor_ZOOM3_Reset_Clear();
             Motor_FOCUS_Reset_Clear();
             Motor_IRIS_Reset_Clear();
+							
+						Motor12_SetTargetPosition(x1_x16_cide[1][0]*8);	//zoom1
+						Motor78_SetTargetPosition(x1_x16_cide[1][1]*4);	//zoom2
+						Motor34_SetTargetPosition(x1_x16_cide[1][2]*4); //zoom3
+						Motor9A_SetTargetPosition(x1_x16_cide[1][3]*4); 
+						current_position=548;
+						target_position =548;	
+							
         }
     }
 }

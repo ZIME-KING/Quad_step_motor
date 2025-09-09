@@ -91,5 +91,8 @@ bool PelcoD_ValidateFrame(uint8_t* frame_data, uint8_t frame_len);
 const char* PelcoD_GetCmdName(PelcoD_CmdType_t cmd_type);
 const char* PelcoD_GetParseResultName(PelcoD_ParseResult_t result);
 
+int PelcoD_ExecuteLensReset(void);
+
+
 #endif /* __PELCO_D_PROTOCOL_H */
 

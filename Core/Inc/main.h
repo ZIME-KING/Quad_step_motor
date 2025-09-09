@@ -111,6 +111,9 @@ void Error_Handler(void);
 #define IRCUT_1_Pin GPIO_PIN_9
 #define IRCUT_1_GPIO_Port GPIOB
 
+
+
+extern const int16_t test_x1_x16_code[][4];
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

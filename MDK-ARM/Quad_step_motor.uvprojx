@@ -530,9 +530,9 @@
               <FilePath>..\User\SYS\sys.c</FilePath>
             </File>
             <File>
-              <FileName>control.c</FileName>
+              <FileName>pelco_d_integration_example.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\control.c</FilePath>
+              <FilePath>..\User\pelco_d_integration_example.c</FilePath>
             </File>
             <File>
               <FileName>pelco_d_protocol.c</FileName>
@@ -540,9 +540,14 @@
               <FilePath>..\User\pelco_d_protocol.c</FilePath>
             </File>
             <File>
-              <FileName>pelco_d_integration_example.c</FileName>
+              <FileName>control.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\User\pelco_d_integration_example.c</FilePath>
+              <FilePath>..\User\control.c</FilePath>
+            </File>
+            <File>
+              <FileName>code.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\code.c</FilePath>
             </File>
           </Files>
         </Group>

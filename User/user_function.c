@@ -29,9 +29,9 @@ void user_test_uart_Process(uint8_t* frame_data, uint8_t frame_len){
 		int16_t fouce_step=(frame_3[uart_3_frame_id].buffer[7]<<8)+frame_3[uart_3_frame_id].buffer[8];
 		
 		Motor12_SetTargetPosition(zoom1_step*8);	//zoom1
-		Motor78_SetTargetPosition(zoom2_step*8);	//zoom2
-		Motor34_SetTargetPosition(zoom3_step*8); //zoom3
-		Motor9A_SetTargetPosition(fouce_step*8);
+		Motor78_SetTargetPosition(zoom2_step*4);	//zoom2
+		Motor34_SetTargetPosition(zoom3_step*4); //zoom3
+		Motor9A_SetTargetPosition(fouce_step*4);
 		
 //		Motor12_SetTargetPosition(zoom1_step);	//zoom1
 //		Motor78_SetTargetPosition(zoom2_step);	//zoom2
@@ -42,11 +42,8 @@ void user_test_uart_Process(uint8_t* frame_data, uint8_t frame_len){
 	//复位命令
 	if(frame_3[uart_3_frame_id].buffer[0]==0xAA &&frame_3[uart_3_frame_id].buffer[1]==0xBB &&frame_3[uart_3_frame_id].buffer[2]==0xCC){
 		// 启动复位
-    Motor_FOCUS_Reset_Start();
-    Motor_ZOOM3_Reset_Start();
-    Motor_ZOOM2_Reset_Start();
-    Motor_ZOOM1_Reset_Start();
-    Motor_IRIS_Reset_Start();
+		PelcoD_ExecuteLensReset();
+
 	}
 	
 }
@@ -58,74 +55,16 @@ void Uart_3_Data_Processing()
     if (frame_3[uart_3_frame_id].status != 0)
     {   // 接收到数据后status=1;
 			//
-			//user_test_uart_Process(frame_3[uart_3_frame_id].buffer, frame_3[uart_3_frame_id].length);
+			user_test_uart_Process(frame_3[uart_3_frame_id].buffer, frame_3[uart_3_frame_id].length);
 			PelcoD_ProcessReceivedFrame(frame_3[uart_3_frame_id].buffer, PELCO_D_FRAME_LENGTH);
       HAL_UART_Transmit(&huart1, (uint8_t *)frame_3[uart_3_frame_id].buffer, frame_3[uart_3_frame_id].length, 100);
 			frame_3[uart_3_frame_id].status = 0; // 处理完数据后status 清0;
     }
 }
 
-//1ms运行一次
-void ZOOM3_reset_handle() {
-    MotorResetState_t state = Motor_ZOOM3_Reset_Process();
-    if (state == MOTOR_RESET_COMPLETED)
-    {
-        Motor_ZOOM3_Reset_Clear();
-    }
-    else if (state == MOTOR_RESET_TIMEOUT)
-    {
-        Motor_ZOOM3_Reset_Clear();
-    }
-}
 
-void FOCUS_reset_handle() {
-    MotorResetState_t state = Motor_FOCUS_Reset_Process();
-    if (state == MOTOR_RESET_COMPLETED)
-    {
-        Motor_FOCUS_Reset_Clear();
-    }
-    else if (state == MOTOR_RESET_TIMEOUT)
-    {
-        Motor_FOCUS_Reset_Clear();
-    }
-}
-
-void ZOOM2_reset_handle() {
-    MotorResetState_t state = Motor_ZOOM2_Reset_Process();
-    if (state == MOTOR_RESET_COMPLETED)
-    {
-        Motor_ZOOM2_Reset_Clear();
-    }
-    else if (state == MOTOR_RESET_TIMEOUT)
-    {
-        Motor_ZOOM2_Reset_Clear();
-    }
-}
-
-void ZOOM1_reset_handle() {
-    MotorResetState_t state = Motor_ZOOM1_Reset_Process();
-    if (state == MOTOR_RESET_COMPLETED)
-    {
-        Motor_ZOOM1_Reset_Clear();
-    }
-    else if (state == MOTOR_RESET_TIMEOUT)
-    {
-        Motor_ZOOM1_Reset_Clear();
-    }
-}
-
-void IRIS_reset_handle() {
-    MotorResetState_t state = Motor_IRIS_Reset_Process();
-    if (state == MOTOR_RESET_COMPLETED)
-    {
-        Motor_IRIS_Reset_Clear();
-    }
-    else if (state == MOTOR_RESET_TIMEOUT)
-    {
-        Motor_IRIS_Reset_Clear();
-    }
-}
-
+void test_PositionControl();
+void PelcoD_1msTimerHandler();
 
 void User_main()
 {
@@ -142,12 +81,9 @@ void User_main()
 //    Motor9A_SetTargetPosition(1000);
 
 
+
     // 启动复位
-    Motor_FOCUS_Reset_Start();
-    Motor_ZOOM3_Reset_Start();
-    Motor_ZOOM2_Reset_Start();
-    Motor_ZOOM1_Reset_Start();
-    Motor_IRIS_Reset_Start();
+  	PelcoD_ExecuteLensReset();
 
     for (;;)
     {
@@ -156,11 +92,12 @@ void User_main()
         if (CompareTime(&Task_1))
         {
             GetTime(&Task_1);
-            ZOOM1_reset_handle();
-            ZOOM2_reset_handle();
-						ZOOM3_reset_handle();
-            FOCUS_reset_handle();
-            IRIS_reset_handle();
+           Motor_ZOOM1_Reset_Process();
+           Motor_ZOOM2_Reset_Process();
+           Motor_ZOOM3_Reset_Process();
+					 Motor_FOCUS_Reset_Process();
+					 Motor_IRIS_Reset_Process();
+					 PelcoD_1msTimerHandler();		//检查复位状态
         }
         if (CompareTime(&Task_20))
         {
@@ -170,7 +107,16 @@ void User_main()
             Motor56_PositionControl(); // iris
             Motor78_PositionControl(); // zoom2
             Motor9A_PositionControl(); // focus
+
         }
+				
+        if (CompareTime(&Task_5))
+        {
+            GetTime(&Task_5);
+						test_PositionControl();
+
+				}
+				
         if (CompareTime(&Task_50))
         {
             GetTime(&Task_50);
@@ -178,10 +124,6 @@ void User_main()
         if (CompareTime(&Task_100))
         {
             GetTime(&Task_100);
-					
-
-					
-					
         }
         if (CompareTime(&Task_1000))
         {
@@ -194,10 +136,10 @@ void User_main()
             // 打印所有电机的当前位置值（每1秒执行一次）
             LOG_Print(LOG_LEVEL_INFO, "========================\r\n");
             LOG_Print(LOG_LEVEL_INFO, "ZOOM1 (Motor12): %d\r\n", Motor12_GetCurrentPosition()/8);
-            LOG_Print(LOG_LEVEL_INFO, "ZOOM3 (Motor34): %d\r\n", Motor34_GetCurrentPosition()/8);
-            LOG_Print(LOG_LEVEL_INFO, "IRIS  (Motor56): %d\r\n", Motor56_GetCurrentPosition()/8);
-            LOG_Print(LOG_LEVEL_INFO, "ZOOM2 (Motor78): %d\r\n", Motor78_GetCurrentPosition()/8);
-            LOG_Print(LOG_LEVEL_INFO, "FOCUS (Motor9A): %d\r\n", Motor9A_GetCurrentPosition()/8);
+            LOG_Print(LOG_LEVEL_INFO, "ZOOM2 (Motor78): %d\r\n", Motor78_GetCurrentPosition()/4);
+            LOG_Print(LOG_LEVEL_INFO, "ZOOM3 (Motor34): %d\r\n", Motor34_GetCurrentPosition()/4);
+            LOG_Print(LOG_LEVEL_INFO, "IRIS  (Motor56): %d\r\n", Motor56_GetCurrentPosition()/4);
+            LOG_Print(LOG_LEVEL_INFO, "FOCUS (Motor9A): %d\r\n", Motor9A_GetCurrentPosition()/4);
             LOG_Print(LOG_LEVEL_INFO, "========================\r\n");
             
             //Motor_ToggleBrakeRun('A');
